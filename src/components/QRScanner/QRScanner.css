@@ -1,0 +1,36 @@
+.qr-scanner {
+  max-width: 720px;
+  margin: 1rem auto;
+  padding: 0.5rem;
+}
+.qr-scanner .viewport {
+  position: relative;
+  width: 100%;
+  background: #000;
+  border-radius: 8px;
+  overflow: hidden;
+}
+.qr-scanner video {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+.qr-scanner .scan-guide {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 60%;
+  height: 40%;
+  transform: translate(-50%, -50%);
+  border: 2px dashed rgba(255,255,255,0.6);
+  border-radius: 6px;
+  pointer-events: none;
+}
+.qr-scanner .result {
+  background: #f6f6f6;
+  padding: 0.75rem;
+  border-radius: 6px;
+}
+.qr-scanner .error {
+  color: #b00020;
+}
