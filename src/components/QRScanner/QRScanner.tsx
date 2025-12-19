@@ -6,7 +6,7 @@ import './QRScanner.css'
 const QRScanner: React.FC = () => {
   const videoRef = useRef<HTMLVideoElement | null>(null)
   const canvasRef = useRef<HTMLCanvasElement | null>(null)
-  const [result, setResult] = useState<string | null>(null)
+  const [result, setResult] = useState<any>(null)
   const [error, setError] = useState<string | null>(null)
   const [sending, setSending] = useState(false)
   const [sendError, setSendError] = useState<string | null>(null)
@@ -174,6 +174,8 @@ const QRScanner: React.FC = () => {
           <button onClick={() => window.location.reload()}>Scan again</button>
         </div>
       )}
+
+      {JSON.stringify({ result, error, sending, sendError, sendSuccess })}
     </div>
   )
 }
