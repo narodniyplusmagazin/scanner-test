@@ -124,7 +124,7 @@ const QRScanner: React.FC = () => {
     setSendError(null)
     setSendSuccess(null)
     try {
-      const res = await fetch('one-c/qr/validate', {
+      const res = await fetch('https://magazin-9614959e5831.herokuapp.com/one-c/qr/validate', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
