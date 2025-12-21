@@ -124,7 +124,7 @@ const QRScanner: React.FC = () => {
     setSendError(null)
     setSendSuccess(null)
     try {
-      const res = await fetch('/qr/validate', {
+      const res = await fetch('one-c/qr/validate', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -132,6 +132,9 @@ const QRScanner: React.FC = () => {
         },
         body: JSON.stringify({ code: data })
       })
+
+      console.log(res);
+      
       if (!res.ok) {
         const txt = await res.text()
         throw new Error(`${res.status} ${res.statusText}: ${txt}`)
