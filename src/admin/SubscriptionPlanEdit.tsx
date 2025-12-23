@@ -6,6 +6,10 @@ import ModeToggle from './components/ModeToggle'
 import StatusMessages from './components/StatusMessages'
 import FeaturesList from './components/FeaturesList'
 import PlanInfo from './components/PlanInfo'
+import { API_BASE_URL } from '../config'
+import Layout from '../components/Layout/Layout'
+import LoadingSpinner from '../components/common/LoadingSpinner'
+import ErrorMessage from '../components/common/ErrorMessage'
 
 export default function SubscriptionPlanEdit() {
   const [mode, setMode] = useState<'edit' | 'create'>('edit')
@@ -27,7 +31,7 @@ export default function SubscriptionPlanEdit() {
   useEffect(() => {
     let mounted = true
     setLoadError(null)
-    axios.get<SubscriptionPlan>('https://magazin-9614959e5831.herokuapp.com/subscriptions/plan')
+    axios.get<SubscriptionPlan>(API_BASE_URL+'/subscriptions/plan')
       .then(response => {
         if (mounted) {
           setPlan(response.data)
@@ -87,11 +91,11 @@ export default function SubscriptionPlanEdit() {
 
     try {
       if (mode === 'create') {
-        const response = await axios.post<SubscriptionPlan>('https://magazin-9614959e5831.herokuapp.com/subscriptions/create', formData)
+        const response = await axios.post<SubscriptionPlan>(API_BASE_URL+'/subscriptions/create', formData)
         setPlan(response.data)
         setMode('edit')
       } else {
-        await axios.put('https://magazin-9614959e5831.herokuapp.com/subscriptions/plan', formData)
+        await axios.put(API_BASE_URL+'/subscriptions/plan', formData)
       }
       setSaveSuccess(true)
       setTimeout(() => setSaveSuccess(false), 3000)
@@ -136,101 +140,110 @@ export default function SubscriptionPlanEdit() {
     }
   }
 
-  if (loading) return <div style={{ padding: 24 }}>Loading subscription plan...</div>
+  if (loading) return (
+    <Layout title="Subscription Plan">
+      <LoadingSpinner message="Loading subscription plan..." />
+    </Layout>
+  )
 
   if (loadError) {
     return (
-      <div style={{ padding: 24 }}>
-        <div style={{ color: 'red', marginBottom: 16 }}>Error: {loadError}</div>
-        <button
-          onClick={handleSwitchToCreate}
-          style={{
-            padding: '12px 24px',
-            backgroundColor: '#28a745',
-            color: 'white',
-            border: 'none',
-            borderRadius: 4,
-            cursor: 'pointer',
-            fontSize: 16,
-            fontWeight: 'bold',
-          }}
-        >
-          Create New Plan
-        </button>
-      </div>
+      <Layout title="Subscription Plan">
+        <div className="card">
+          <div style={{ padding: '32px', textAlign: 'center' }}>
+            <ErrorMessage 
+              message={loadError}
+            />
+            <button
+              onClick={handleSwitchToCreate}
+              className="btn btn-success"
+              style={{ marginTop: '24px' }}
+            >
+              Create New Plan
+            </button>
+          </div>
+        </div>
+      </Layout>
     )
   }
 
   return (
-    <div className="admin-root" style={{ padding: 24 }}>
-      {mode === 'create' && !plan && (
-        <div style={{ color: '#856404', marginBottom: 16, padding: 12, backgroundColor: '#fff3cd', borderRadius: 4 }}>
-          No subscription plan found. Create a new one below.
-        </div>
-      )}
-      
-      <ModeToggle
-        mode={mode}
-        hasPlan={!!plan}
-        onSwitchToEdit={handleSwitchToEdit}
-        onSwitchToCreate={handleSwitchToCreate}
-      />
-      
-      <StatusMessages saveSuccess={saveSuccess} saveError={saveError} />
-      
-      <form onSubmit={handleSubmit} style={{ maxWidth: 600 }}>
-        <div style={{ marginBottom: 16 }}>
-          <label style={{ display: 'block', marginBottom: 4, fontWeight: 'bold' }}>
-            Plan Name
-          </label>
-          <input
-            type="text"
-            value={formData.name}
-            onChange={(e) => handleInputChange('name', e.target.value)}
-            required
-            style={{ width: '100%', padding: 8, fontSize: 14, borderRadius: 4, border: '1px solid #ccc' }}
-          />
-        </div>
+    <Layout title="Subscription Plan">
+      <div className="admin-container">
+        {mode === 'create' && !plan && (
+          <div className="alert alert-warning">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z" />
+              <line x1="12" y1="9" x2="12" y2="13" />
+              <line x1="12" y1="17" x2="12.01" y2="17" />
+            </svg>
+            <span>No subscription plan found. Create a new one below.</span>
+          </div>
+        )}
+        
+        <div className="card">
+          <div className="card-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+            <h3 className="card-title">{mode === 'create' ? 'Create New Subscription Plan' : 'Edit Subscription Plan'}</h3>
+            <ModeToggle
+              mode={mode}
+              hasPlan={!!plan}
+              onSwitchToEdit={handleSwitchToEdit}
+              onSwitchToCreate={handleSwitchToCreate}
+            />
+          </div>
+          
+          <div style={{ padding: '24px' }}>
+            <StatusMessages saveSuccess={saveSuccess} saveError={saveError} />
+            
+            <form onSubmit={handleSubmit} style={{ maxWidth: 600 }}>
+              <div className="form-group">
+                <label className="form-label">Plan Name</label>
+                <input
+                  type="text"
+                  className="form-input"
+                  value={formData.name}
+                  onChange={(e) => handleInputChange('name', e.target.value)}
+                  required
+                  placeholder="Enter plan name"
+                />
+              </div>
 
-        <div style={{ marginBottom: 16 }}>
-          <label style={{ display: 'block', marginBottom: 4, fontWeight: 'bold' }}>
-            Price (in cents/smallest currency unit)
-          </label>
-          <input
-            type="number"
-            value={formData.price}
-            onChange={(e) => handleInputChange('price', parseInt(e.target.value) || 0)}
-            required
-            min="0"
-            style={{ width: '100%', padding: 8, fontSize: 14, borderRadius: 4, border: '1px solid #ccc' }}
-          />
-        </div>
+              <div className="form-group">
+                <label className="form-label">Price (in cents/smallest currency unit)</label>
+                <input
+                  type="number"
+                  className="form-input"
+                  value={formData.price}
+                  onChange={(e) => handleInputChange('price', parseInt(e.target.value) || 0)}
+                  required
+                  min="0"
+                  placeholder="e.g., 999 for $9.99"
+                />
+              </div>
 
-        <div style={{ marginBottom: 16 }}>
-          <label style={{ display: 'block', marginBottom: 4, fontWeight: 'bold' }}>
-            Duration (days)
-          </label>
-          <input
-            type="number"
-            value={formData.durationDays}
-            onChange={(e) => handleInputChange('durationDays', parseInt(e.target.value) || 0)}
-            required
-            min="1"
-            style={{ width: '100%', padding: 8, fontSize: 14, borderRadius: 4, border: '1px solid #ccc' }}
-          />
-        </div>
+              <div className="form-group">
+                <label className="form-label">Duration (days)</label>
+                <input
+                  type="number"
+                  className="form-input"
+                  value={formData.durationDays}
+                  onChange={(e) => handleInputChange('durationDays', parseInt(e.target.value) || 0)}
+                  required
+                  min="1"
+                  placeholder="e.g., 30 for monthly"
+                />
+              </div>
 
-        <div style={{ marginBottom: 16 }}>
-          <label style={{ display: 'block', marginBottom: 4, fontWeight: 'bold' }}>
-            Description
-          </label>
-          <textarea
-            value={formData.description}
-            onChange={(e) => handleInputChange('description', e.target.value)}
-            rows={4}
-            style={{ width: '100%', padding: 8, fontSize: 14, borderRadius: 4, border: '1px solid #ccc' }}
-          />
-        </div>
+              <div className="form-group">
+                <label className="form-label">Description</label>
+                <textarea
+                  className="form-textarea"
+                  value={formData.description}
+                  onChange={(e) => handleInputChange('description', e.target.value)}
+                  rows={4}
+                  placeholder="Enter plan description"
+                />
+              </div>
 
         <FeaturesList
           features={formData.features || []}
@@ -240,26 +253,19 @@ export default function SubscriptionPlanEdit() {
           onRemoveFeature={handleRemoveFeature}
         />
 
-        <button
-          type="submit"
-          disabled={saving}
-          style={{
-            padding: '12px 24px',
-            backgroundColor: mode === 'create' ? '#28a745' : '#007bff',
-            color: 'white',
-            border: 'none',
-            borderRadius: 4,
-            cursor: saving ? 'not-allowed' : 'pointer',
-            fontSize: 16,
-            fontWeight: 'bold',
-            opacity: saving ? 0.6 : 1,
-          }}
-        >
-          {saving ? (mode === 'create' ? 'Creating...' : 'Saving...') : (mode === 'create' ? 'Create Plan' : 'Save Changes')}
-        </button>
-      </form>
+              <button
+                type="submit"
+                disabled={saving}
+                className={`btn ${mode === 'create' ? 'btn-success' : 'btn-primary'}`}
+              >
+                {saving ? (mode === 'create' ? 'Creating...' : 'Saving...') : (mode === 'create' ? 'Create Plan' : 'Save Changes')}
+              </button>
+            </form>
+          </div>
+        </div>
 
-      {plan && <PlanInfo plan={plan} />}
-    </div>
+        {plan && <PlanInfo plan={plan} />}
+      </div>
+    </Layout>
   )
 }

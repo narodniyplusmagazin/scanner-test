@@ -14,6 +14,11 @@ export interface User {
   gender: Gender;
   createdAt: string;
   updatedAt: string;
+  _count?: {
+    subscriptions?: number;
+    payments?: number;
+    usages?: number;
+  };
 }
 
 export interface CreateUserDto {

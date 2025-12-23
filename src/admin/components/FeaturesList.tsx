@@ -14,56 +14,54 @@ export default function FeaturesList({
   onRemoveFeature,
 }: FeaturesListProps) {
   return (
-    <div style={{ marginBottom: 16 }}>
-      <label style={{ display: 'block', marginBottom: 4, fontWeight: 'bold' }}>
-        Features
-      </label>
-      <div style={{ display: 'flex', gap: 8, marginBottom: 8 }}>
+    <div className="form-group">
+      <label className="form-label">Features</label>
+      <div style={{ display: 'flex', gap: 8, marginBottom: 12 }}>
         <input
           type="text"
+          className="form-input"
           value={featureInput}
           onChange={(e) => onFeatureInputChange(e.target.value)}
           onKeyPress={(e) => e.key === 'Enter' && (e.preventDefault(), onAddFeature())}
-          placeholder="Add a feature"
-          style={{ flex: 1, padding: 8, fontSize: 14, borderRadius: 4, border: '1px solid #ccc' }}
+          placeholder="Add a feature..."
         />
         <button
           type="button"
           onClick={onAddFeature}
-          style={{
-            padding: '8px 16px',
-            backgroundColor: '#28a745',
-            color: 'white',
-            border: 'none',
-            borderRadius: 4,
-            cursor: 'pointer',
-          }}
+          className="btn btn-primary"
+          style={{ whiteSpace: 'nowrap' }}
         >
-          Add
+          + Add
         </button>
       </div>
-      <ul style={{ listStyle: 'none', padding: 0 }}>
-        {features.map((feature, index) => (
-          <li key={index} style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 8 }}>
-            <span style={{ flex: 1 }}>• {feature}</span>
-            <button
-              type="button"
-              onClick={() => onRemoveFeature(index)}
-              style={{
-                padding: '4px 8px',
-                backgroundColor: '#dc3545',
-                color: 'white',
-                border: 'none',
-                borderRadius: 4,
-                cursor: 'pointer',
-                fontSize: 12,
-              }}
-            >
-              Remove
-            </button>
-          </li>
-        ))}
-      </ul>
+      {features.length > 0 && (
+        <ul style={{ listStyle: 'none', padding: 0, margin: 0 }}>
+          {features.map((feature, index) => (
+            <li key={index} style={{ 
+              display: 'flex', 
+              alignItems: 'center', 
+              gap: 12, 
+              marginBottom: 8,
+              padding: '12px',
+              background: 'var(--gray-50)',
+              borderRadius: 'var(--radius-md)',
+              border: '1px solid var(--gray-200)'
+            }}>
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{ flexShrink: 0, color: 'var(--success-color)' }}>
+                <polyline points="20 6 9 17 4 12" />
+              </svg>
+              <span style={{ flex: 1, color: 'var(--gray-700)' }}>{feature}</span>
+              <button
+                type="button"
+                onClick={() => onRemoveFeature(index)}
+                className="btn btn-sm btn-danger"
+              >
+                Remove
+              </button>
+            </li>
+          ))}
+        </ul>
+      )}
     </div>
   )
 }
