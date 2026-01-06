@@ -22,6 +22,8 @@ export default function UsersList() {
   const [searchQuery, setSearchQuery] = useState('')
   const [showCreateModal, setShowCreateModal] = useState(false)
 
+
+
   
   
   useEffect(() => {
@@ -127,6 +129,8 @@ export default function UsersList() {
   }) || []
   
   console.log(selectedUserId);
+  console.log(subscriptions);
+  
   
   if (!users) return (
     <Layout title="Users">
@@ -407,6 +411,7 @@ export default function UsersList() {
                     <table className="data-table">
                       <thead>
                         <tr>
+                          <th>ID</th>
                           <th>Plan</th>
                           <th>Start Date</th>
                           <th>End Date</th>
