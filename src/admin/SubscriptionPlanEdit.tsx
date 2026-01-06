@@ -30,9 +30,14 @@ export default function SubscriptionPlanEdit() {
 
   useEffect(() => {
     let mounted = true
-    setLoadError(null)
-    axios.get<SubscriptionPlan>(API_BASE_URL+'/subscriptions/plan')
-      .then(response => {
+    
+    const loadPlan = async () => {
+      setLoadError(null)
+      
+      try {
+        const response = await axios.get<SubscriptionPlan>(API_BASE_URL+'/subscriptions/plan')
+        console.log(response, "<<<<")
+        
         if (mounted) {
           setPlan(response.data)
           setFormData({
@@ -46,19 +51,25 @@ export default function SubscriptionPlanEdit() {
           setMode('edit')
           setLoading(false)
         }
-      })
-      .catch((error) => {
+      } catch (error) {
         if (mounted) {
           // If plan doesn't exist (404), start in create mode
           if (axios.isAxiosError(error) && error.response?.status === 404) {
             setMode('create')
             setPlan(null)
           } else {
-            setLoadError(error.response?.data?.message || error.message || 'Failed to load plan')
+            const errorMessage = axios.isAxiosError(error)
+              ? error.response?.data?.message || error.message || 'Failed to load plan'
+              : 'Failed to load plan'
+            setLoadError(errorMessage)
           }
           setLoading(false)
         }
-      })
+      }
+    }
+    
+    loadPlan()
+    
     return () => { mounted = false }
   }, [])
 
@@ -165,7 +176,10 @@ export default function SubscriptionPlanEdit() {
         </div>
       </Layout>
     )
-  }
+  };
+
+  console.log(plan);
+  
 
   return (
     <Layout title="Subscription Plan">

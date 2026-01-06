@@ -8,6 +8,7 @@ import Layout from '../components/Layout/Layout'
 import LoadingSpinner from '../components/common/LoadingSpinner'
 import ErrorMessage from '../components/common/ErrorMessage'
 import EmptyState from '../components/common/EmptyState'
+import CreateSubscriptionForm from './components/CreateSubscriptionForm'
 
 export default function UsersList() {
   const [users, setUsers] = useState<User[] | null>(null)
@@ -19,6 +20,7 @@ export default function UsersList() {
   const [loadError, setLoadError] = useState<string | null>(null)
   const [subscriptionsError, setSubscriptionsError] = useState<string | null>(null)
   const [searchQuery, setSearchQuery] = useState('')
+  const [showCreateModal, setShowCreateModal] = useState(false)
 
   
   
@@ -88,6 +90,30 @@ export default function UsersList() {
   const handleSelectUser = (user: User) => {
     setSelectedUserId(user.id)
     setSelectedUser(user)
+  }
+
+  const handleCreateSubscription = () => {
+    if (!selectedUserId) {
+      alert('Please select a user first')
+      return
+    }
+    setShowCreateModal(true)
+  }
+
+  const handleSubscriptionCreated = () => {
+    setShowCreateModal(false)
+    // Reload subscriptions for selected user
+    if (selectedUserId) {
+      setSubscriptionsError(null)
+      setSubscriptions(null)
+      
+      axios.get<MySubscription[]>(API_BASE_URL+`/subscriptions/my-subscriptions/${selectedUserId}`)
+        .then(response => setSubscriptions(response.data))
+        .catch((error) => {
+          setSubscriptionsError(error.response?.data?.message || error.message || 'Failed to load subscriptions')
+          setSubscriptions([])
+        })
+    }
   }
 
   const filteredUsers = users?.filter(user => {
@@ -339,7 +365,19 @@ export default function UsersList() {
 
               <div className="card">
                 <div className="card-header">
-                  <h3 className="card-title">Subscription History</h3>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                    <h3 className="card-title">Subscription History</h3>
+                    <button
+                      onClick={handleCreateSubscription}
+                      className="btn btn-success"
+                    >
+                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{ marginRight: '6px' }}>
+                        <line x1="12" y1="5" x2="12" y2="19" />
+                        <line x1="5" y1="12" x2="19" y2="12" />
+                      </svg>
+                      Create Subscription
+                    </button>
+                  </div>
                 </div>
 
                 {subscriptionsError && (
@@ -400,6 +438,20 @@ export default function UsersList() {
             </>
           )}
         </div>
+
+        {/* Create Subscription Modal */}
+        {showCreateModal && selectedUser && (
+          <div className="modal-overlay" onClick={() => setShowCreateModal(false)}>
+            <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+              <CreateSubscriptionForm
+                userId={selectedUser.id}
+                userName={selectedUser.fullName}
+                onSuccess={handleSubscriptionCreated}
+                onCancel={() => setShowCreateModal(false)}
+              />
+            </div>
+          </div>
+        )}
       </div>
     </Layout>
   )

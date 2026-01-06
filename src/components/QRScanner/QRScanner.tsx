@@ -15,7 +15,8 @@ const QRScanner: React.FC = () => {
   const { 
     sending, 
     sendError, 
-    sendSuccess, 
+    sendSuccess,
+    validationData,
     validateQRCode,
     deleting,
     deleteError,
@@ -83,6 +84,7 @@ const QRScanner: React.FC = () => {
             sending={sending}
             sendError={sendError}
             sendSuccess={sendSuccess}
+            validationData={validationData?.data || null}
             onRetry={handleRetry}
             onScanAgain={handleScanAgain}
             deleting={deleting}
