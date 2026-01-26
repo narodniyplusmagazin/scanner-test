@@ -12,7 +12,12 @@ Admin dashboard for "magazin" subscription management system. Built with Vite + 
 - `/admin/subscription` - [SubscriptionPlanEdit.tsx](../src/admin/SubscriptionPlanEdit.tsx) - plan CRUD with edit/create mode toggle
 - `/qr` - [QRScanner.tsx](../src/components/QRScanner/QRScanner.tsx) - camera-based QR validation with SSE
 
-**Backend:** REST API at `API_BASE_URL` in [src/config.ts](../src/config.ts). Currently set to local IP (`http://172.20.10.6:5050`), production URL commented out. All API calls use axios with `API_BASE_URL` prefix except QR validation which uses native `fetch` with SSE.
+**Backend:** REST API at `API_BASE_URL` in [src/config.ts](../src/config.ts). Currently set to local IP (`http://172.20.10.6:5050`), production URL commented out. All API calls use axios with `API_BASE_URL` prefix except QR validation which uses EventSource with SSE.
+
+**CSS Architecture:** Global design tokens in [index.css](../src/index.css) define the visual system:
+- CSS custom properties: `--primary-color`, `--gray-*`, `--spacing-*`, `--radius-*`, `--shadow-*`
+- Component-specific styles colocated with components (e.g., `Admin.css`, `QRScanner.css`)
+- Shared utility classes: `.card`, `.btn`, `.badge`, `.alert`, `.form-input`, `.data-table`
 
 ## Key Patterns
 
@@ -32,25 +37,33 @@ Admin dashboard for "magazin" subscription management system. Built with Vite + 
   - `GET /subscriptions/plan` → `SubscriptionPlan` (single plan system, returns 404 if none exists)
   - `PUT /subscriptions/plan` (update existing), `POST /subscriptions/create` (create new subscription OR plan)
   - `DELETE /users/:userId`, `DELETE /subscriptions/:subscriptionId`
-  - `GET /one-c/qr/validate?code=X` → SSE stream with validation result (requires `x-api-key: onec_key_example`)
-- **SSE pattern**: QR validation uses EventSource, not axios. Parse QR JSON to extract `subId`, append `_sub` suffix for backend: `${parsed.subId}_sub`
+  - `GET /one-c/qr/validate?code=X` → JSON response `{ type, valid, reason?, message?, data? }`. Send encrypted QR data directly as `code` param. Daily limit: 3 uses per day per subscription.
+- **QR validation response**: Returns `{ valid: boolean, reason?: string, message?: string, data?: { subscriptionId, userId, userName?, expiresAt, remainingUses, validatedAt } }`
+- **Request body format**: [CreateSubscriptionForm.tsx](../src/admin/components/CreateSubscriptionForm.tsx#L52) shows POST body is `{ userId }` for subscription creation
 
 ### Custom hooks pattern
 Two QRScanner hooks demonstrate extraction pattern:
 - **[useCameraScanner.ts](../src/components/QRScanner/useCameraScanner.ts)**: Hardware interaction (camera, video, canvas). Uses refs for DOM, cleanup in `useEffect` return. Tries native `BarcodeDetector` API first, falls back to jsQR library.
-- **[useQRValidation.ts](../src/components/QRScanner/useQRValidation.ts)**: API calls (fetch with headers, error handling). Parses JSON from QR, extracts `subId`, formats for backend.
+- **[useQRValidation.ts](../src/components/QRScanner/useQRValidation.ts)**: API calls (axios GET/DELETE, error handling). Validates encrypted QR codes and handles subscription deletion. Backend decrypts and validates QR data.
 
 When adding features with external dependencies or async logic, extract to custom hook following this pattern.
+
+### QR Code handling
+- **Decryption**: [decodeQRData.ts](../src/components/QRScanner/decodeQRData.ts) handles crypto-js AES decryption using `QR_ENCRYPTION_KEY`
+- **Type detection**: Identifies QR type (url/email/phone/json/subscription/encrypted) and returns `DecodedQRData` interface
+- **Memoization**: Use `useMemo(() => decodeQRData(result), [result])` to prevent redundant decryption (see [ScannerResult.tsx](../src/components/QRScanner/ScannerResult.tsx#L40))
 
 ### Component structure
 - **Small presentational components** in `src/admin/components/` or `src/components/` subdirs
   - [FeaturesList.tsx](../src/admin/components/FeaturesList.tsx): Controlled input with callbacks
   - [ModeToggle.tsx](../src/admin/components/ModeToggle.tsx), [StatusMessages.tsx](../src/admin/components/StatusMessages.tsx), [PlanInfo.tsx](../src/admin/components/PlanInfo.tsx)
   - [LoadingSpinner.tsx](../src/components/common/LoadingSpinner.tsx), [EmptyState.tsx](../src/components/common/EmptyState.tsx), [ErrorMessage.tsx](../src/components/common/ErrorMessage.tsx) - reusable UI components with props for size/message
+  - QR Scanner components: [QRDataDisplay.tsx](../src/components/QRScanner/QRDataDisplay.tsx), [ValidationStatus.tsx](../src/components/QRScanner/ValidationStatus.tsx), [SubscriptionDetails.tsx](../src/components/QRScanner/SubscriptionDetails.tsx) - display decoded data, validation state, subscription info
 - **Page components** in `src/admin/` or root of feature folder
   - Manage all state, handle API calls, compose smaller components
   - Colocate styles (e.g., `Admin.css` used by both UsersList and SubscriptionPlanEdit)
 - **Layout wrapper**: [Layout.tsx](../src/components/Layout/Layout.tsx) provides header nav + main content area. Wrap all page components with `<Layout title="Page Title">`.
+- **Composition pattern**: Large components split into smaller files (e.g., QRScanner → ScannerViewport + ScannerResult + ValidationStatus). Each handles one concern.
 
 ### Modal pattern
 - In [UsersList.tsx](../src/admin/UsersList.tsx#L456-L465): Modal for CreateSubscriptionForm
@@ -75,7 +88,15 @@ When adding features with external dependencies or async logic, extract to custo
 - **Badge styles**: `badge badge-success` (green), `badge-info` (blue), `badge-inactive` (gray), `badge-neutral`
 - **Button variants**: `btn btn-primary`, `btn-success`, `btn-danger`, `btn-secondary`, `btn-sm`, `btn-primary-active`
 - **Table structure**: Wrap in `div.table-container` → `table.data-table` with `thead`/`tbody`. Use `actions-column` class for action buttons
-- **CSS custom properties**: Available in Admin.css - `var(--spacing-lg)`, `var(--gray-600)`, `var(--radius-md)`, `var(--shadow-xl)`, etc.
+- **CSS custom properties**: Available in [index.css](../src/index.css) - `var(--spacing-lg)`, `var(--gray-600)`, `var(--radius-md)`, `var(--shadow-xl)`, etc.
+
+### Dependencies
+- **axios** (^1.13.2): All REST API calls
+- **crypto-js** (^4.2.0): QR code decryption (`CryptoJS.AES.decrypt`)
+- **jsqr** (^1.4.0): Fallback QR detection when native BarcodeDetector unavailable
+- **react-router-dom** (^7.11.0): Client-side routing (BrowserRouter)
+- **react** (^19.2.0), **react-dom** (^19.2.0): React 19 (latest)
+- **vite** (^7.2.4): Build tool with HMR
 
 ## Workflows
 ```bash
@@ -86,10 +107,11 @@ npm run lint      # ESLint check
 ```
 
 ## Adding features
-1. **New page**: Add route in [App.tsx](../src/App.tsx), create component in `src/admin/` or `src/components/`
+1. **New page**: Add route in [App.tsx](../src/App.tsx), create component in `src/admin/` or `src/components/`, wrap with Layout component
 2. **New API endpoint**: Update `API_BASE_URL` calls, add types to `src/types/`
 3. **Reusable logic**: Extract to custom hook (see useCameraScanner/useQRValidation pattern)
-4. **Styles**: Colocate CSS files, import at top of component (`import './Component.css'`)
+4. **Styles**: Colocate CSS files, import at top of component (`import './Component.css'`). Use CSS custom properties from [index.css](../src/index.css)
+5. **Common UI patterns**: Reuse `LoadingSpinner`, `EmptyState`, `ErrorMessage` components. Follow existing modal/alert/badge patterns in [Admin.css](../src/admin/Admin.css)
 
 ## Known constraints
 - No tests: Manual verification required
