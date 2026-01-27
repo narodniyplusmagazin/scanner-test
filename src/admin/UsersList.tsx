@@ -23,9 +23,6 @@ export default function UsersList() {
   const [showCreateModal, setShowCreateModal] = useState(false)
 
 
-
-  
-  
   useEffect(() => {
     let mounted = true
     setLoadError(null)
