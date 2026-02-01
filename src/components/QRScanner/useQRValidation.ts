@@ -43,6 +43,12 @@ export const useQRValidation = () => {
    */
   const validateQRCode = async (data: string) => {
     console.log('Sending QR data to server:', data)
+    console.log(data,"<<<<");
+    
+    
+    // Strip "QR_" prefix if present
+    const cleanData = data.startsWith('QR_') ? data.substring(3) : data
+    console.log('Clean QR data (prefix removed):', cleanData)
     
     setSending(true)
     setSendError(null)
@@ -50,10 +56,10 @@ export const useQRValidation = () => {
     setValidationData(null)
     
     try {
-      // Send the encrypted QR data directly to the API
       const response = await axios.get<QRResponse>(API_ENDPOINT, {
-        params: { code: data }
-      })
+        params: { code: cleanData }
+      });
+      
       
       const responseBody = response.data
       console.log('Server response:', responseBody)

@@ -50,9 +50,14 @@ const tryDecrypt = (data: string): { success: boolean; decrypted?: string; error
  * Decode QR code data and determine its type and structure
  */
 export const decodeQRData = (data: string): DecodedQRData => {
+  console.log(data);
+  
+  // Strip "QR_" prefix if present
+  const cleanData = data.startsWith('QR_') ? data.substring(3) : data
+  
   // Try to decrypt first if data looks encrypted
-  const decryptResult = tryDecrypt(data)
-  let workingData = data
+  const decryptResult = tryDecrypt(cleanData)
+  let workingData = cleanData
   let wasDecrypted = false
   
   if (decryptResult.success && decryptResult.decrypted) {
