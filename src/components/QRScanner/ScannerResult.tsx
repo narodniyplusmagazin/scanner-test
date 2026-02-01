@@ -32,6 +32,9 @@ const ScannerResult: React.FC<ScannerResultProps> = ({
   onDelete
 }) => {
 
+  console.log(result);
+  
+
     console.log(result, "QR result in ScannerResult");
     
   // Decode QR data once
