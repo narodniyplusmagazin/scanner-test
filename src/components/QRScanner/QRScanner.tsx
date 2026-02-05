@@ -58,6 +58,9 @@ const QRScanner: React.FC = () => {
 
   const handleConfirmUsage = () => {
     if (result) {
+
+      console.log(result,"result");
+      
       confirmQRUsage(result)
     }
   }

@@ -127,9 +127,21 @@ export const useQRValidation = () => {
       const cleanData = data.startsWith('QR_') ? data.substring(3) : data
       
       const confirmEndpoint = `${API_BASE_URL}/one-c/qr/confirm-usage`
-      const response = await axios.post(confirmEndpoint, {
-        code: cleanData
-      })
+      const requestBody: { code: string; userId?: string; subscriptionId?: string } = {
+        code: cleanData,
+      }
+      
+      // Include userId and subscriptionId from validation data if available
+      if (validationData?.data?.userId) {
+        requestBody.userId = validationData.data.userId
+      }
+      if (validationData?.data?.subscriptionId) {
+        requestBody.subscriptionId = validationData.data.subscriptionId
+      }
+      
+      console.log('Confirm usage request body:', requestBody)
+      
+      const response = await axios.post(confirmEndpoint, requestBody)
       
       const responseBody = response.data
       console.log('Confirm usage response:', responseBody)
