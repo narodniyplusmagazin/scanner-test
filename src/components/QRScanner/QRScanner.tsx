@@ -18,6 +18,10 @@ const QRScanner: React.FC = () => {
     sendSuccess,
     validationData,
     validateQRCode,
+    confirming,
+    confirmError,
+    confirmSuccess,
+    confirmQRUsage,
     deleting,
     deleteError,
     deleteSuccess,
@@ -49,6 +53,12 @@ const QRScanner: React.FC = () => {
   const handleDelete = () => {
     if (result) {
       deleteSubscription(result)
+    }
+  }
+
+  const handleConfirmUsage = () => {
+    if (result) {
+      confirmQRUsage(result)
     }
   }
 
@@ -90,6 +100,10 @@ const QRScanner: React.FC = () => {
             validationData={validationData?.data || null}
             onRetry={handleRetry}
             onScanAgain={handleScanAgain}
+            confirming={confirming}
+            confirmError={confirmError}
+            confirmSuccess={confirmSuccess}
+            onConfirmUsage={handleConfirmUsage}
             deleting={deleting}
             deleteError={deleteError}
             deleteSuccess={deleteSuccess}

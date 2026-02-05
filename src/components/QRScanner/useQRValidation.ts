@@ -38,6 +38,10 @@ export const useQRValidation = () => {
   const [deleteError, setDeleteError] = useState<string | null>(null)
   const [deleteSuccess, setDeleteSuccess] = useState<string | null>(null)
 
+  const [confirming, setConfirming] = useState(false)
+  const [confirmError, setConfirmError] = useState<string | null>(null)
+  const [confirmSuccess, setConfirmSuccess] = useState<string | null>(null)
+
   /**
    * Send QR code data to server for validation using GET request
    */
@@ -109,6 +113,50 @@ export const useQRValidation = () => {
   }
 
   /**
+   * Confirm QR usage - marks the subscription as used for today
+   */
+  const confirmQRUsage = async (data: string) => {
+    console.log('Confirming QR usage:', data)
+    
+    setConfirming(true)
+    setConfirmError(null)
+    setConfirmSuccess(null)
+    
+    try {
+      // Strip "QR_" prefix if present
+      const cleanData = data.startsWith('QR_') ? data.substring(3) : data
+      
+      const confirmEndpoint = `${API_BASE_URL}/one-c/qr/confirm-usage`
+      const response = await axios.post(confirmEndpoint, {
+        code: cleanData
+      })
+      
+      const responseBody = response.data
+      console.log('Confirm usage response:', responseBody)
+      
+      if (responseBody.status === 'ok') {
+        const usageInfo = responseBody.data
+        setConfirmSuccess(
+          `✓ Usage confirmed! ${usageInfo.remainingUses} of ${usageInfo.dailyLimit} uses remaining today`
+        )
+      } else {
+        const errorMessage = responseBody.message || 'Failed to confirm usage'
+        setConfirmError(errorMessage)
+      }
+    } catch (err) {
+      console.error('Confirm usage error:', err)
+      if (axios.isAxiosError(err)) {
+        const errorMessage = err.response?.data?.message || err.message || 'Connection error during confirmation'
+        setConfirmError(errorMessage)
+      } else {
+        setConfirmError(err instanceof Error ? err.message : 'Unknown error during confirmation')
+      }
+    } finally {
+      setConfirming(false)
+    }
+  }
+
+  /**
    * Delete subscription based on QR code data
    */
   const deleteSubscription = async (data: string) => {
@@ -153,6 +201,10 @@ export const useQRValidation = () => {
     sendSuccess,
     validationData,
     validateQRCode,
+    confirming,
+    confirmError,
+    confirmSuccess,
+    confirmQRUsage,
     deleting,
     deleteError,
     deleteSuccess,

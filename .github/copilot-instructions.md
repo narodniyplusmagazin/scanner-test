@@ -10,9 +10,9 @@ Admin dashboard for "magazin" subscription management system. Built with Vite + 
 - `/` - [Home.tsx](../src/pages/Home.tsx) - landing page with navigation cards
 - `/admin/users` - [UsersList.tsx](../src/admin/UsersList.tsx) - user management + subscription viewer with inline details
 - `/admin/subscription` - [SubscriptionPlanEdit.tsx](../src/admin/SubscriptionPlanEdit.tsx) - plan CRUD with edit/create mode toggle
-- `/qr` - [QRScanner.tsx](../src/components/QRScanner/QRScanner.tsx) - camera-based QR validation with SSE
+- `/qr` - [QRScanner.tsx](../src/components/QRScanner/QRScanner.tsx) - camera-based QR validation
 
-**Backend:** REST API at `API_BASE_URL` in [src/config.ts](../src/config.ts). Currently set to local IP (`http://172.20.10.6:5050`), production URL commented out. All API calls use axios with `API_BASE_URL` prefix except QR validation which uses EventSource with SSE.
+**Backend:** REST API at `API_BASE_URL` in [src/config.ts](../src/config.ts). Set to `/api` which uses Vercel proxy ([vercel.json](../vercel.json)) to rewrite requests to production server (`http://84.201.180.219`). All API calls use axios with `API_BASE_URL` prefix. Local dev can override to direct IP (commented out in config.ts).
 
 **CSS Architecture:** Global design tokens in [index.css](../src/index.css) define the visual system:
 - CSS custom properties: `--primary-color`, `--gray-*`, `--spacing-*`, `--radius-*`, `--shadow-*`
@@ -30,6 +30,7 @@ Admin dashboard for "magazin" subscription management system. Built with Vite + 
 
 ### API integration
 - **Pattern**: `axios.get<Type>(API_BASE_URL + '/endpoint')` with typed responses
+- **Proxy setup**: Production uses Vercel proxy ([vercel.json](../vercel.json)) to avoid CORS/mixed content issues. Requests to `/api/*` are rewritten to `http://84.201.180.219/*`
 - **Error handling**: Extract `error.response?.data?.message || error.message || 'fallback'`
 - **Endpoints**:
   - `GET /users` → `User[]` with `_count` for subscriptions/payments/usages
