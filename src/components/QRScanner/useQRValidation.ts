@@ -115,59 +115,57 @@ export const useQRValidation = () => {
   /**
    * Confirm QR usage - marks the subscription as used for today
    */
-  const confirmQRUsage = async (data: string) => {
-    console.log('Confirming QR usage:', data)
+const confirmQRUsage = async (data: string) => {
+  console.log('Confirming QR usage:', data)
+  
+  setConfirming(true)
+  setConfirmError(null)
+  setConfirmSuccess(null)
+  
+  try {
+    const cleanData = data.startsWith('QR_') ? data.substring(3) : data
     
-    setConfirming(true)
-    setConfirmError(null)
-    setConfirmSuccess(null)
-    
-    try {
-      // Strip "QR_" prefix if present
-      const cleanData = data.startsWith('QR_') ? data.substring(3) : data
-      
-      const confirmEndpoint = `${API_BASE_URL}/one-c/qr/confirm-usage`
-      const requestBody: { code: string; userId?: string; subscriptionId?: string } = {
-        code: cleanData,
-      }
-      
-      // Include userId and subscriptionId from validation data if available
-      if (validationData?.data?.userId) {
-        requestBody.userId = validationData.data.userId
-      }
-      if (validationData?.data?.subscriptionId) {
-        requestBody.subscriptionId = validationData.data.subscriptionId
-      }
-      
-      console.log('Confirm usage request body:', requestBody)
-      
-      const response = await axios.post(confirmEndpoint, requestBody)
-      
-      const responseBody = response.data
-      console.log('Confirm usage response:', responseBody)
-      
-      if (responseBody.status === 'ok') {
-        const usageInfo = responseBody.data
-        setConfirmSuccess(
-          `✓ Usage confirmed! ${usageInfo.remainingUses} of ${usageInfo.dailyLimit} uses remaining today`
-        )
-      } else {
-        const errorMessage = responseBody.message || 'Failed to confirm usage'
-        setConfirmError(errorMessage)
-      }
-    } catch (err) {
-      console.error('Confirm usage error:', err)
-      if (axios.isAxiosError(err)) {
-        const errorMessage = err.response?.data?.message || err.message || 'Connection error during confirmation'
-        setConfirmError(errorMessage)
-      } else {
-        setConfirmError(err instanceof Error ? err.message : 'Unknown error during confirmation')
-      }
-    } finally {
-      setConfirming(false)
+    // const confirmEndpoint = `${API_BASE_URL}/one-c/qr/confirm-usage`
+    const requestBody: { code: string; userId?: string; subscriptionId?: string } = {
+      code: cleanData,
     }
+    
+    if (validationData?.data?.userId) {
+      requestBody.userId = validationData.data.userId
+    }
+    if (validationData?.data?.subscriptionId) {
+      requestBody.subscriptionId = validationData.data.subscriptionId
+    }
+    
+    console.log('Confirm usage request body:', requestBody)
+    
+    // Send requestBody directly, not wrapped in { data: requestBody }
+    const response = await axios.post(`${API_BASE_URL}/one-c/qr/confirm-usage`, requestBody)
+    
+    const responseBody = response.data
+    console.log('Confirm usage response:', responseBody)
+    
+    if (responseBody.status === 'ok') {
+      const usageInfo = responseBody.data
+      setConfirmSuccess(
+        `✓ Usage confirmed! ${usageInfo.remainingUses} of ${usageInfo.dailyLimit} uses remaining today`
+      )
+    } else {
+      const errorMessage = responseBody.message || 'Failed to confirm usage'
+      setConfirmError(errorMessage)
+    }
+  } catch (err) {
+    console.error('Confirm usage error:', err)
+    if (axios.isAxiosError(err)) {
+      const errorMessage = err.response?.data?.message || err.message || 'Connection error during confirmation'
+      setConfirmError(errorMessage)
+    } else {
+      setConfirmError(err instanceof Error ? err.message : 'Unknown error during confirmation')
+    }
+  } finally {
+    setConfirming(false)
   }
-
+}
   /**
    * Delete subscription based on QR code data
    */

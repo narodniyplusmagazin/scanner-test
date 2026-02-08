@@ -69,9 +69,6 @@ const QRScanner: React.FC = () => {
     window.location.reload()
   }
 
-
-  
-
   return (
     <Layout title="QR Scanner">
       <div className="qr-scanner-container">
