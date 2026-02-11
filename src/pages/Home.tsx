@@ -45,6 +45,31 @@ export default function Home() {
             <div className="card-arrow">→</div>
           </Link>
 
+          <Link to="/admin/subscriptions" className="home-card">
+            <div className="card-icon">
+              <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <rect x="3" y="3" width="18" height="18" rx="2" />
+                <path d="M3 9h18" />
+                <path d="M9 21V9" />
+              </svg>
+            </div>
+            <h3 className="card-title">All Subscriptions</h3>
+            <p className="card-description">View and manage all user subscriptions</p>
+            <div className="card-arrow">→</div>
+          </Link>
+
+          <Link to="/admin/payments" className="home-card">
+            <div className="card-icon">
+              <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <rect x="2" y="5" width="20" height="14" rx="2" />
+                <line x1="2" y1="10" x2="22" y2="10" />
+              </svg>
+            </div>
+            <h3 className="card-title">Payments</h3>
+            <p className="card-description">View user payment history and transactions</p>
+            <div className="card-arrow">→</div>
+          </Link>
+
           <Link to="/qr" className="home-card">
             <div className="card-icon">
               <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">

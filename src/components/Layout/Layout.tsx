@@ -38,6 +38,18 @@ export default function Layout({ children, title }: LayoutProps) {
               Subscription Plan
             </Link>
             <Link 
+              to="/admin/subscriptions" 
+              className={`layout-nav-link ${isActive('/admin/subscriptions') ? 'active' : ''}`}
+            >
+              All Subscriptions
+            </Link>
+            <Link 
+              to="/admin/payments" 
+              className={`layout-nav-link ${isActive('/admin/payments') ? 'active' : ''}`}
+            >
+              Payments
+            </Link>
+            <Link 
               to="/qr" 
               className={`layout-nav-link ${isActive('/qr') ? 'active' : ''}`}
             >

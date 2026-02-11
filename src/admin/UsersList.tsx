@@ -3,6 +3,7 @@ import axios from 'axios'
 import './Admin.css'
 import type { User } from '../types/user.types'
 import type { MySubscription } from '../types/subscription.types'
+import type { Payment } from '../types/payment.types'
 import { API_BASE_URL } from '../config'
 import Layout from '../components/Layout/Layout'
 import LoadingSpinner from '../components/common/LoadingSpinner'
@@ -13,12 +14,14 @@ import CreateSubscriptionForm from './components/CreateSubscriptionForm'
 export default function UsersList() {
   const [users, setUsers] = useState<User[] | null>(null)
   const [subscriptions, setSubscriptions] = useState<MySubscription[] | null>(null)
+  const [payments, setPayments] = useState<Payment[] | null>(null)
   const [selectedUserId, setSelectedUserId] = useState<string | null>(null)
   const [selectedUser, setSelectedUser] = useState<User | null>(null)
   const [deleting, setDeleting] = useState<string | null>(null)
   const [deleteError, setDeleteError] = useState<string | null>(null)
   const [loadError, setLoadError] = useState<string | null>(null)
   const [subscriptionsError, setSubscriptionsError] = useState<string | null>(null)
+  const [paymentsError, setPaymentsError] = useState<string | null>(null)
   const [searchQuery, setSearchQuery] = useState('')
   const [showCreateModal, setShowCreateModal] = useState(false)
 
@@ -40,6 +43,7 @@ export default function UsersList() {
   useEffect(() => {
     if (!selectedUserId) {
       setSubscriptions(null)
+      setPayments(null)
       return
     }
     
@@ -53,6 +57,27 @@ export default function UsersList() {
         if (mounted) {
           setSubscriptionsError(error.response?.data?.message || error.message || 'Failed to load subscriptions')
           setSubscriptions([])
+        }
+      })
+    return () => { mounted = false }
+  }, [selectedUserId])
+
+  useEffect(() => {
+    if (!selectedUserId) {
+      setPayments(null)
+      return
+    }
+    
+    let mounted = true
+    setPaymentsError(null)
+    setPayments(null)
+    
+    axios.get<Payment[]>(API_BASE_URL+`/payments/my-payments/${selectedUserId}`)
+      .then(response => { if (mounted) setPayments(response.data) })
+      .catch((error) => {
+        if (mounted) {
+          setPaymentsError(error.response?.data?.message || error.message || 'Failed to load payments')
+          setPayments([])
         }
       })
     return () => { mounted = false }
@@ -435,6 +460,125 @@ export default function UsersList() {
                       </tbody>
                     </table>
                   </div>
+                )}
+              </div>
+
+              <div className="card" style={{ marginTop: 'var(--spacing-lg)' }}>
+                <div className="card-header">
+                  <h3 className="card-title">Payment History</h3>
+                </div>
+
+                {paymentsError && (
+                  <div className="alert alert-warning">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                      <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z" />
+                      <line x1="12" y1="9" x2="12" y2="13" />
+                      <line x1="12" y1="17" x2="12.01" y2="17" />
+                    </svg>
+                    <span>{paymentsError}</span>
+                  </div>
+                )}
+
+                {!payments ? (
+                  <div style={{ padding: '48px 24px' }}>
+                    <LoadingSpinner size="small" message="Loading payments..." />
+                  </div>
+                ) : payments.length === 0 ? (
+                  <div style={{ padding: '32px 24px' }}>
+                    <EmptyState
+                      title="No payments"
+                      description="This user hasn't made any payments yet."
+                      icon={
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                          <rect x="2" y="5" width="20" height="14" rx="2" />
+                          <line x1="2" y1="10" x2="22" y2="10" />
+                        </svg>
+                      }
+                    />
+                  </div>
+                ) : (
+                  <>
+                    <div className="table-container">
+                      <table className="data-table">
+                        <thead>
+                          <tr>
+                            <th>Date</th>
+                            <th>YooKassa ID</th>
+                            <th>Amount</th>
+                            <th>Status</th>
+                            <th>Description</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {payments.map((payment) => (
+                            <tr key={payment.id}>
+                              <td>{new Date(payment.createdAt).toLocaleString('ru-RU', { year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit' })}</td>
+                              <td>
+                                <code style={{ fontSize: '0.75rem', color: 'var(--gray-700)' }}>
+                                  {payment.yookassaPaymentId}
+                                </code>
+                              </td>
+                              <td style={{ fontWeight: 500 }}>
+                                {payment.amount.toLocaleString('ru-RU', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} {payment.currency}
+                              </td>
+                              <td>
+                                <span className={`badge ${
+                                  payment.status === 'succeeded' ? 'badge-success' :
+                                  payment.status === 'pending' ? 'badge-info' :
+                                  'badge-inactive'
+                                }`}>
+                                  {payment.status}
+                                </span>
+                              </td>
+                              <td>{payment.description}</td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
+                    <div style={{ 
+                      marginTop: 'var(--spacing-lg)', 
+                      padding: 'var(--spacing-lg)', 
+                      background: 'var(--gray-50)', 
+                      borderRadius: 'var(--radius-md)',
+                      display: 'grid',
+                      gridTemplateColumns: 'repeat(auto-fit, minmax(150px, 1fr))',
+                      gap: 'var(--spacing-lg)'
+                    }}>
+                      <div>
+                        <div style={{ fontSize: '0.875rem', color: 'var(--gray-600)', marginBottom: 'var(--spacing-xs)' }}>
+                          Total Payments
+                        </div>
+                        <div style={{ fontSize: '1.5rem', fontWeight: 600, color: 'var(--gray-900)' }}>
+                          {payments.length}
+                        </div>
+                      </div>
+                      <div>
+                        <div style={{ fontSize: '0.875rem', color: 'var(--gray-600)', marginBottom: 'var(--spacing-xs)' }}>
+                          Total Amount
+                        </div>
+                        <div style={{ fontSize: '1.5rem', fontWeight: 600, color: 'var(--gray-900)' }}>
+                          {payments.reduce((sum, p) => sum + Number(p.amount), 0).toLocaleString('ru-RU', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} {payments[0]?.currency || 'RUB'}
+                        </div>
+                      </div>
+                      <div>
+                        <div style={{ fontSize: '0.875rem', color: 'var(--gray-600)', marginBottom: 'var(--spacing-xs)' }}>
+                          Succeeded
+                        </div>
+                        <div style={{ fontSize: '1.5rem', fontWeight: 600, color: 'var(--success-color)' }}>
+                          {payments.filter(p => p.status === 'succeeded').length}
+                        </div>
+                      </div>
+                      <div>
+                        <div style={{ fontSize: '0.875rem', color: 'var(--gray-600)', marginBottom: 'var(--spacing-xs)' }}>
+                          Pending
+                        </div>
+                        <div style={{ fontSize: '1.5rem', fontWeight: 600, color: 'var(--info-color)' }}>
+                          {payments.filter(p => p.status === 'pending').length}
+                        </div>
+                      </div>
+                    </div>
+                  </>
                 )}
               </div>
             </>
