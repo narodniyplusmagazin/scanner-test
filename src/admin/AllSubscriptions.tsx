@@ -92,6 +92,8 @@ export default function AllSubscriptions() {
     return true;
   }) || [];
 
+  
+
   const activeCount = subscriptions?.filter(s => s.isActive).length || 0;
   const inactiveCount = subscriptions?.filter(s => !s.isActive).length || 0;
   const expiringCount = subscriptions?.filter(s => s.isActive && isExpiringSoon(s.endDate)).length || 0;
@@ -225,7 +227,8 @@ export default function AllSubscriptions() {
               <table className="data-table">
                 <thead>
                   <tr>
-                    <th>User</th>
+                    <th>ID</th>
+                    <th>User id</th>
                     <th>Plan</th>
                     <th>Start Date</th>
                     <th>End Date</th>
@@ -244,15 +247,20 @@ export default function AllSubscriptions() {
                     return (
                       <tr key={subscription.id}>
                         <td>
+                          <div style={{ fontSize: '0.75rem', color: 'var(--gray-600)', fontFamily: 'monospace' }}>
+                            {subscription.id}
+                          </div>
+                        </td>
+                        <td>
                           <div>
                             <div style={{ fontWeight: 500 }}>
-                              {subscription.user?.fullName || 'Unknown User'}
+                              {subscription.userId || 'Unknown User'}
                             </div>
-                            {subscription.user?.email && (
+                            {/* {subscription.userId && (
                               <div style={{ fontSize: '0.75rem', color: 'var(--gray-600)' }}>
-                                {subscription.user.email}
+                                {subscription.userId}
                               </div>
-                            )}
+                            )} */}
                           </div>
                         </td>
                         <td>

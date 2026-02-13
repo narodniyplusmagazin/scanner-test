@@ -125,22 +125,22 @@ const confirmQRUsage = async (data: string) => {
   try {
     const cleanData = data.startsWith('QR_') ? data.substring(3) : data
     
-    // const confirmEndpoint = `${API_BASE_URL}/one-c/qr/confirm-usage`
-    const requestBody: { code: string; userId?: string; subscriptionId?: string } = {
+    const params: { code: string; userId?: string; subscriptionId?: string } = {
       code: cleanData,
     }
     
     if (validationData?.data?.userId) {
-      requestBody.userId = validationData.data.userId
+      params.userId = validationData.data.userId
     }
     if (validationData?.data?.subscriptionId) {
-      requestBody.subscriptionId = validationData.data.subscriptionId
+      params.subscriptionId = validationData.data.subscriptionId
     }
     
-    console.log('Confirm usage request body:', requestBody)
+    console.log('Confirm usage params:', params)
     
-    // Send requestBody directly, not wrapped in { data: requestBody }
-    const response = await axios.post(`${API_BASE_URL}/one-c/qr/confirm-usage`, requestBody)
+    const response = await axios.get(`${API_BASE_URL}/one-c/qr/confirm-usage`, {
+      params
+    })
     
     const responseBody = response.data
     console.log('Confirm usage response:', responseBody)
@@ -150,6 +150,19 @@ const confirmQRUsage = async (data: string) => {
       setConfirmSuccess(
         `✓ Usage confirmed! ${usageInfo.remainingUses} of ${usageInfo.dailyLimit} uses remaining today`
       )
+      
+      // Update validation data with new usage counts
+      if (validationData) {
+        setValidationData({
+          ...validationData,
+          data: validationData.data ? {
+            ...validationData.data,
+            remainingUses: usageInfo.remainingUses,
+            usedToday: usageInfo.usageCount,
+            limit: usageInfo.dailyLimit
+          } : undefined
+        })
+      }
     } else {
       const errorMessage = responseBody.message || 'Failed to confirm usage'
       setConfirmError(errorMessage)
@@ -157,7 +170,7 @@ const confirmQRUsage = async (data: string) => {
   } catch (err) {
     console.error('Confirm usage error:', err)
     if (axios.isAxiosError(err)) {
-      const errorMessage = err.response?.data?.message || err.message || 'Connection error during confirmation'
+      const errorMessage = err.response?.data?.message || err.response?.data?.error || err.message || 'Connection error during confirmation'
       setConfirmError(errorMessage)
     } else {
       setConfirmError(err instanceof Error ? err.message : 'Unknown error during confirmation')
