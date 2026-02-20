@@ -49,6 +49,12 @@ export default function Layout({ children, title }: LayoutProps) {
             >
               Payments
             </Link>
+            <Link
+              to="/admin/verifications"
+              className={`layout-nav-link ${isActive('/admin/verifications') ? 'active' : ''}`}
+            >
+              Verifications
+            </Link>
             <Link 
               to="/qr" 
               className={`layout-nav-link ${isActive('/qr') ? 'active' : ''}`}

@@ -70,6 +70,18 @@ export default function Home() {
             <div className="card-arrow">→</div>
           </Link>
 
+          <Link to="/admin/verifications" className="home-card">
+            <div className="card-icon">
+              <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <path d="M9 11l3 3L22 4" />
+                <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11" />
+              </svg>
+            </div>
+            <h3 className="card-title">Verifications</h3>
+            <p className="card-description">View all auth verifications and delete them in one action</p>
+            <div className="card-arrow">→</div>
+          </Link>
+
           <Link to="/qr" className="home-card">
             <div className="card-icon">
               <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">

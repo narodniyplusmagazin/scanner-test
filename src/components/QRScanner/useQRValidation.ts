@@ -5,6 +5,10 @@ import { API_BASE_URL } from '../../config'
 // API configuration
 const API_ENDPOINT = API_BASE_URL + '/one-c/qr/validate'
 
+const ensureQrPrefix = (value: string): string => {
+  return value.startsWith('QR_') ? value : `QR_${value}`
+}
+
 export interface QRResponse {
   type: string
   valid: boolean
@@ -50,9 +54,8 @@ export const useQRValidation = () => {
     console.log(data,"<<<<");
     
     
-    // Strip "QR_" prefix if present
-    const cleanData = data.startsWith('QR_') ? data.substring(3) : data
-    console.log('Clean QR data (prefix removed):', cleanData)
+    const formattedData = ensureQrPrefix(data)
+    console.log('QR data sent to OneC:', formattedData)
     
     setSending(true)
     setSendError(null)
@@ -61,7 +64,7 @@ export const useQRValidation = () => {
     
     try {
       const response = await axios.get<QRResponse>(API_ENDPOINT, {
-        params: { code: cleanData }
+        params: { code: formattedData }
       });
       
       
@@ -123,10 +126,10 @@ const confirmQRUsage = async (data: string) => {
   setConfirmSuccess(null)
   
   try {
-    const cleanData = data.startsWith('QR_') ? data.substring(3) : data
+    const formattedData = ensureQrPrefix(data)
     
     const params: { code: string; userId?: string; subscriptionId?: string } = {
-      code: cleanData,
+      code: formattedData,
     }
     
     if (validationData?.data?.userId) {
