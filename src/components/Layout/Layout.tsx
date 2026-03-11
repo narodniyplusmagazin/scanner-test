@@ -29,37 +29,37 @@ export default function Layout({ children, title }: LayoutProps) {
               to="/admin/users" 
               className={`layout-nav-link ${isActive('/admin/users') ? 'active' : ''}`}
             >
-              Users
+              Пользователи
             </Link>
-            <Link 
-              to="/admin/subscription" 
+            <Link
+              to="/admin/subscription"
               className={`layout-nav-link ${isActive('/admin/subscription') ? 'active' : ''}`}
             >
-              Subscription Plan
+              Тарифный план
             </Link>
-            <Link 
-              to="/admin/subscriptions" 
+            <Link
+              to="/admin/subscriptions"
               className={`layout-nav-link ${isActive('/admin/subscriptions') ? 'active' : ''}`}
             >
-              All Subscriptions
+              Все подписки
             </Link>
-            <Link 
-              to="/admin/payments" 
+            <Link
+              to="/admin/payments"
               className={`layout-nav-link ${isActive('/admin/payments') ? 'active' : ''}`}
             >
-              Payments
+              Платежи
             </Link>
             <Link
               to="/admin/verifications"
               className={`layout-nav-link ${isActive('/admin/verifications') ? 'active' : ''}`}
             >
-              Verifications
+              Верификации
             </Link>
-            <Link 
-              to="/qr" 
+            <Link
+              to="/qr"
               className={`layout-nav-link ${isActive('/qr') ? 'active' : ''}`}
             >
-              QR Scanner
+              QR Сканер
             </Link>
           </nav>
         </div>
