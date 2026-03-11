@@ -23,7 +23,7 @@ const ValidationStatus: React.FC<ValidationStatusProps> = ({
           <circle cx="12" cy="12" r="10" opacity="0.25" />
           <path d="M12 2 A10 10 0 0 1 22 12" strokeLinecap="round" />
         </svg>
-        <span>Validating QR code...</span>
+        <span>Проверка QR-кода...</span>
       </div>
     )
   }
@@ -43,7 +43,7 @@ const ValidationStatus: React.FC<ValidationStatusProps> = ({
           onClick={onRetry}
           className="btn-secondary"
         >
-          Retry Validation
+          Повторить проверку
         </button>
       </div>
     )
@@ -82,31 +82,31 @@ const ValidationStatus: React.FC<ValidationStatusProps> = ({
                 <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" />
                 <polyline points="22 4 12 14.01 9 11.01" />
               </svg>
-              Validation Details
+              Детали проверки
             </div>
             
             <div style={{ display: 'grid', gap: '8px', fontSize: '14px' }}>
               {validationData.userName && (
                 <div style={{ display: 'flex', padding: '8px', background: 'var(--gray-50)', borderRadius: '6px' }}>
-                  <strong style={{ minWidth: '140px', color: 'var(--gray-600)' }}>User Name:</strong>
+                  <strong style={{ minWidth: '140px', color: 'var(--gray-600)' }}>Имя пользователя:</strong>
                   <span style={{ color: 'var(--gray-800)' }}>{validationData.userName}</span>
                 </div>
               )}
               
               <div style={{ display: 'flex', padding: '8px', background: 'var(--gray-50)', borderRadius: '6px' }}>
-                <strong style={{ minWidth: '140px', color: 'var(--gray-600)' }}>Subscription ID:</strong>
+                <strong style={{ minWidth: '140px', color: 'var(--gray-600)' }}>ID подписки:</strong>
                 <span style={{ color: 'var(--gray-800)', fontFamily: 'monospace', fontSize: '12px' }}>{validationData.subscriptionId}</span>
               </div>
               
               <div style={{ display: 'flex', padding: '8px', background: 'var(--gray-50)', borderRadius: '6px' }}>
-                <strong style={{ minWidth: '140px', color: 'var(--gray-600)' }}>User ID:</strong>
+                <strong style={{ minWidth: '140px', color: 'var(--gray-600)' }}>ID пользователя:</strong>
                 <span style={{ color: 'var(--gray-800)', fontFamily: 'monospace', fontSize: '12px' }}>{validationData.userId}</span>
               </div>
               
               <div style={{ display: 'flex', padding: '8px', background: 'var(--gray-50)', borderRadius: '6px' }}>
-                <strong style={{ minWidth: '140px', color: 'var(--gray-600)' }}>Expires At:</strong>
+                <strong style={{ minWidth: '140px', color: 'var(--gray-600)' }}>Истекает:</strong>
                 <span style={{ color: 'var(--gray-800)' }}>
-                  {new Date(validationData.expiresAt).toLocaleString('en-US', {
+                  {new Date(validationData.expiresAt).toLocaleString('ru-RU', {
                     year: 'numeric',
                     month: 'long',
                     day: 'numeric',
@@ -117,9 +117,9 @@ const ValidationStatus: React.FC<ValidationStatusProps> = ({
               </div>
               
               <div style={{ display: 'flex', padding: '8px', background: 'var(--gray-50)', borderRadius: '6px' }}>
-                <strong style={{ minWidth: '140px', color: 'var(--gray-600)' }}>Validated At:</strong>
+                <strong style={{ minWidth: '140px', color: 'var(--gray-600)' }}>Проверено:</strong>
                 <span style={{ color: 'var(--gray-800)' }}>
-                  {new Date(validationData.validatedAt).toLocaleString('en-US', {
+                  {new Date(validationData.validatedAt).toLocaleString('ru-RU', {
                     year: 'numeric',
                     month: 'long',
                     day: 'numeric',
@@ -131,7 +131,7 @@ const ValidationStatus: React.FC<ValidationStatusProps> = ({
               
               {validationData.remainingUses !== null && (
                 <div style={{ display: 'flex', padding: '8px', background: 'var(--gray-50)', borderRadius: '6px' }}>
-                  <strong style={{ minWidth: '140px', color: 'var(--gray-600)' }}>Remaining Uses:</strong>
+                  <strong style={{ minWidth: '140px', color: 'var(--gray-600)' }}>Осталось использований:</strong>
                   <span style={{ color: 'var(--gray-800)' }}>{validationData.remainingUses}</span>
                 </div>
               )}

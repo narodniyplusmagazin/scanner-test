@@ -44,7 +44,7 @@ const QRDataDisplay: React.FC<QRDataDisplayProps> = ({ decoded }) => {
             borderRadius: '4px',
             fontWeight: '600'
           }}>
-            🔓 DECRYPTED
+            🔓 РАСШИФРОВАНО
           </span>
         )}
         {decoded.encryptionError && (
@@ -57,7 +57,7 @@ const QRDataDisplay: React.FC<QRDataDisplayProps> = ({ decoded }) => {
             borderRadius: '4px',
             fontWeight: '600'
           }}>
-            ⚠️ ENCRYPTION ERROR
+            ⚠️ ОШИБКА ШИФРОВАНИЯ
           </span>
         )}
       </div>
@@ -79,10 +79,10 @@ const QRDataDisplay: React.FC<QRDataDisplayProps> = ({ decoded }) => {
           marginBottom: '12px',
           color: '#c62828'
         }}>
-          <strong>⚠️ Decryption Failed:</strong>
+          <strong>⚠️ Ошибка расшифровки:</strong>
           <div style={{ marginTop: '4px', fontSize: '14px' }}>{decoded.encryptionError}</div>
           <div style={{ marginTop: '8px', fontSize: '13px', color: '#d32f2f' }}>
-            The QR code appears to be encrypted. Please verify the encryption key is correct.
+            QR-код зашифрован. Пожалуйста, проверьте правильность ключа шифрования.
           </div>
         </div>
       )}
@@ -90,7 +90,7 @@ const QRDataDisplay: React.FC<QRDataDisplayProps> = ({ decoded }) => {
       {/* Display parsed data if available */}
       {decoded.parsed && Object.keys(decoded.parsed).length > 0 && (
         <details className="qr-details">
-          <summary>Details</summary>
+          <summary>Детали</summary>
           <div className="qr-parsed-data">
             {Object.entries(decoded.parsed).map(([key, value]) => (
               <div key={key} className="qr-field">
@@ -112,7 +112,7 @@ const QRDataDisplay: React.FC<QRDataDisplayProps> = ({ decoded }) => {
 
       {/* Show raw data */}
       <details className="qr-raw-data">
-        <summary>Raw Data</summary>
+        <summary>Исходные данные</summary>
         <pre>{decoded.raw}</pre>
       </details>
     </div>

@@ -15,7 +15,7 @@ export default function FeaturesList({
 }: FeaturesListProps) {
   return (
     <div className="form-group">
-      <label className="form-label">Features</label>
+      <label className="form-label">Возможности</label>
       <div style={{ display: 'flex', gap: 8, marginBottom: 12 }}>
         <input
           type="text"
@@ -23,7 +23,7 @@ export default function FeaturesList({
           value={featureInput}
           onChange={(e) => onFeatureInputChange(e.target.value)}
           onKeyPress={(e) => e.key === 'Enter' && (e.preventDefault(), onAddFeature())}
-          placeholder="Add a feature..."
+          placeholder="Добавить возможность..."
         />
         <button
           type="button"
@@ -31,7 +31,7 @@ export default function FeaturesList({
           className="btn btn-primary"
           style={{ whiteSpace: 'nowrap' }}
         >
-          + Add
+          + Добавить
         </button>
       </div>
       {features.length > 0 && (
@@ -56,7 +56,7 @@ export default function FeaturesList({
                 onClick={() => onRemoveFeature(index)}
                 className="btn btn-sm btn-danger"
               >
-                Remove
+                Удалить
               </button>
             </li>
           ))}

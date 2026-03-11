@@ -70,7 +70,7 @@ const QRScanner: React.FC = () => {
   }
 
   return (
-    <Layout title="QR Scanner">
+    <Layout title="QR Сканер">
       <div className="qr-scanner-container">
         {!result && !error && (
           <div className="scanner-instructions">
@@ -82,8 +82,8 @@ const QRScanner: React.FC = () => {
                 <rect x="3" y="14" width="7" height="7" />
               </svg>
             </div>
-            <h3>Scan a QR Code</h3>
-            <p>Position the QR code within the frame. The scanner will automatically detect and validate it.</p>
+            <h3>Сканировать QR-код</h3>
+            <p>Наведите QR-код в рамку. Сканер автоматически распознает и проверит его.</p>
           </div>
         )}
         

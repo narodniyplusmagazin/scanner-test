@@ -59,8 +59,8 @@ export default function SubscriptionPlanEdit() {
             setPlan(null)
           } else {
             const errorMessage = axios.isAxiosError(error)
-              ? error.response?.data?.message || error.message || 'Failed to load plan'
-              : 'Failed to load plan'
+              ? error.response?.data?.message || error.message || 'Не удалось загрузить тариф'
+              : 'Не удалось загрузить тариф'
             setLoadError(errorMessage)
           }
           setLoading(false)
@@ -114,7 +114,7 @@ export default function SubscriptionPlanEdit() {
       if (axios.isAxiosError(error)) {
         setSaveError(error.response?.data?.message || error.message)
       } else {
-        setSaveError(`Failed to ${mode} plan`)
+        setSaveError(mode === 'create' ? 'Не удалось создать тариф' : 'Не удалось сохранить тариф')
       }
     } finally {
       setSaving(false)
@@ -152,14 +152,14 @@ export default function SubscriptionPlanEdit() {
   }
 
   if (loading) return (
-    <Layout title="Subscription Plan">
-      <LoadingSpinner message="Loading subscription plan..." />
+    <Layout title="Тарифный план">
+      <LoadingSpinner message="Загрузка тарифного плана..." />
     </Layout>
   )
 
   if (loadError) {
     return (
-      <Layout title="Subscription Plan">
+      <Layout title="Тарифный план">
         <div className="card">
           <div style={{ padding: '32px', textAlign: 'center' }}>
             <ErrorMessage 
@@ -170,7 +170,7 @@ export default function SubscriptionPlanEdit() {
               className="btn btn-success"
               style={{ marginTop: '24px' }}
             >
-              Create New Plan
+              Создать новый план
             </button>
           </div>
         </div>
@@ -182,7 +182,7 @@ export default function SubscriptionPlanEdit() {
   
 
   return (
-    <Layout title="Subscription Plan">
+    <Layout title="Тарифный план">
       <div className="admin-container">
         {mode === 'create' && !plan && (
           <div className="alert alert-warning">
@@ -191,13 +191,13 @@ export default function SubscriptionPlanEdit() {
               <line x1="12" y1="9" x2="12" y2="13" />
               <line x1="12" y1="17" x2="12.01" y2="17" />
             </svg>
-            <span>No subscription plan found. Create a new one below.</span>
+            <span>Тарифный план не найден. Создайте новый ниже.</span>
           </div>
         )}
         
         <div className="card">
           <div className="card-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-            <h3 className="card-title">{mode === 'create' ? 'Create New Subscription Plan' : 'Edit Subscription Plan'}</h3>
+            <h3 className="card-title">{mode === 'create' ? 'Создать тарифный план' : 'Редактировать тарифный план'}</h3>
             <ModeToggle
               mode={mode}
               hasPlan={!!plan}
@@ -211,19 +211,19 @@ export default function SubscriptionPlanEdit() {
             
             <form onSubmit={handleSubmit} style={{ maxWidth: 600 }}>
               <div className="form-group">
-                <label className="form-label">Plan Name</label>
+                <label className="form-label">Название плана</label>
                 <input
                   type="text"
                   className="form-input"
                   value={formData.name}
                   onChange={(e) => handleInputChange('name', e.target.value)}
                   required
-                  placeholder="Enter plan name"
+                  placeholder="Введите название плана"
                 />
               </div>
 
               <div className="form-group">
-                <label className="form-label">Price (in cents/smallest currency unit)</label>
+                <label className="form-label">Цена (в копейках)</label>
                 <input
                   type="number"
                   className="form-input"
@@ -231,12 +231,12 @@ export default function SubscriptionPlanEdit() {
                   onChange={(e) => handleInputChange('price', parseInt(e.target.value) || 0)}
                   required
                   min="0"
-                  placeholder="e.g., 999 for $9.99"
+                  placeholder="Например, 999 для 9.99 ₽"
                 />
               </div>
 
               <div className="form-group">
-                <label className="form-label">Duration (days)</label>
+                <label className="form-label">Длительность (дней)</label>
                 <input
                   type="number"
                   className="form-input"
@@ -244,18 +244,18 @@ export default function SubscriptionPlanEdit() {
                   onChange={(e) => handleInputChange('durationDays', parseInt(e.target.value) || 0)}
                   required
                   min="1"
-                  placeholder="e.g., 30 for monthly"
+                  placeholder="Например, 30 для месячного плана"
                 />
               </div>
 
               <div className="form-group">
-                <label className="form-label">Description</label>
+                <label className="form-label">Описание</label>
                 <textarea
                   className="form-textarea"
                   value={formData.description}
                   onChange={(e) => handleInputChange('description', e.target.value)}
                   rows={4}
-                  placeholder="Enter plan description"
+                  placeholder="Введите описание плана"
                 />
               </div>
 
@@ -272,7 +272,7 @@ export default function SubscriptionPlanEdit() {
                 disabled={saving}
                 className={`btn ${mode === 'create' ? 'btn-success' : 'btn-primary'}`}
               >
-                {saving ? (mode === 'create' ? 'Creating...' : 'Saving...') : (mode === 'create' ? 'Create Plan' : 'Save Changes')}
+                {saving ? (mode === 'create' ? 'Создание...' : 'Сохранение...') : (mode === 'create' ? 'Создать план' : 'Сохранить изменения')}
               </button>
             </form>
           </div>

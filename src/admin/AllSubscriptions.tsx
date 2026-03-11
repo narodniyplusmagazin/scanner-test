@@ -37,7 +37,7 @@ export default function AllSubscriptions() {
           setError(
             err.response?.data?.message ||
             err.message ||
-            'Failed to fetch subscriptions'
+            'Не удалось загрузить подписки'
           );
           setSubscriptions([]);
         }
@@ -99,7 +99,7 @@ export default function AllSubscriptions() {
   const expiringCount = subscriptions?.filter(s => s.isActive && isExpiringSoon(s.endDate)).length || 0;
 
   return (
-    <Layout title="All Subscriptions">
+    <Layout title="Все подписки">
       <div className="admin-container">
         {/* Statistics Cards */}
         {subscriptions && subscriptions.length > 0 && (
@@ -111,7 +111,7 @@ export default function AllSubscriptions() {
           }}>
             <div className="card">
               <div style={{ fontSize: '0.875rem', color: 'var(--gray-600)', marginBottom: 'var(--spacing-xs)' }}>
-                Total Subscriptions
+                Всего подписок
               </div>
               <div style={{ fontSize: '2rem', fontWeight: 600, color: 'var(--gray-900)' }}>
                 {subscriptions.length}
@@ -119,7 +119,7 @@ export default function AllSubscriptions() {
             </div>
             <div className="card">
               <div style={{ fontSize: '0.875rem', color: 'var(--gray-600)', marginBottom: 'var(--spacing-xs)' }}>
-                Active
+                Активные
               </div>
               <div style={{ fontSize: '2rem', fontWeight: 600, color: 'var(--success-color)' }}>
                 {activeCount}
@@ -127,7 +127,7 @@ export default function AllSubscriptions() {
             </div>
             <div className="card">
               <div style={{ fontSize: '0.875rem', color: 'var(--gray-600)', marginBottom: 'var(--spacing-xs)' }}>
-                Inactive
+                Неактивные
               </div>
               <div style={{ fontSize: '2rem', fontWeight: 600, color: 'var(--gray-400)' }}>
                 {inactiveCount}
@@ -135,7 +135,7 @@ export default function AllSubscriptions() {
             </div>
             <div className="card">
               <div style={{ fontSize: '0.875rem', color: 'var(--gray-600)', marginBottom: 'var(--spacing-xs)' }}>
-                Expiring Soon
+                Истекают скоро
               </div>
               <div style={{ fontSize: '2rem', fontWeight: 600, color: 'var(--warning-color)' }}>
                 {expiringCount}
@@ -149,39 +149,39 @@ export default function AllSubscriptions() {
           <div style={{ display: 'flex', gap: 'var(--spacing-lg)', alignItems: 'center', flexWrap: 'wrap' }}>
             <div style={{ flex: 1, minWidth: '250px' }}>
               <label htmlFor="search" style={{ display: 'block', marginBottom: 'var(--spacing-xs)', color: 'var(--gray-700)', fontSize: '0.875rem', fontWeight: 500 }}>
-                Search
+                Поиск
               </label>
               <input
                 id="search"
                 type="text"
                 className="form-input"
-                placeholder="Search by user, email, plan name..."
+                placeholder="Поиск по пользователю, email, названию плана..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
               />
             </div>
             <div>
               <label style={{ display: 'block', marginBottom: 'var(--spacing-xs)', color: 'var(--gray-700)', fontSize: '0.875rem', fontWeight: 500 }}>
-                Filter by Status
+                Фильтр по статусу
               </label>
               <div style={{ display: 'flex', gap: 'var(--spacing-sm)' }}>
                 <button
                   onClick={() => setFilterStatus('all')}
                   className={`btn btn-sm ${filterStatus === 'all' ? 'btn-primary' : 'btn-secondary'}`}
                 >
-                  All
+                  Все
                 </button>
                 <button
                   onClick={() => setFilterStatus('active')}
                   className={`btn btn-sm ${filterStatus === 'active' ? 'btn-success' : 'btn-secondary'}`}
                 >
-                  Active
+                  Активные
                 </button>
                 <button
                   onClick={() => setFilterStatus('inactive')}
                   className={`btn btn-sm ${filterStatus === 'inactive' ? 'btn-secondary' : 'btn-secondary'}`}
                 >
-                  Inactive
+                  Неактивные
                 </button>
               </div>
             </div>
@@ -201,7 +201,7 @@ export default function AllSubscriptions() {
         {/* Empty State */}
         {!loading && subscriptions && subscriptions.length === 0 && (
           <EmptyState 
-            title="No subscriptions found"
+            title="Подписки не найдены"
             icon={
               <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
                 <rect x="1" y="4" width="22" height="16" rx="2" ry="2" />
@@ -216,9 +216,9 @@ export default function AllSubscriptions() {
           <div className="card">
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 'var(--spacing-lg)' }}>
               <h2>
-                Subscription List
+                Список подписок
                 <span style={{ marginLeft: 'var(--spacing-sm)', color: 'var(--gray-500)', fontWeight: 'normal', fontSize: '1rem' }}>
-                  ({filteredSubscriptions.length} {filteredSubscriptions.length === 1 ? 'subscription' : 'subscriptions'})
+                  ({filteredSubscriptions.length})
                 </span>
               </h2>
             </div>
@@ -228,13 +228,13 @@ export default function AllSubscriptions() {
                 <thead>
                   <tr>
                     <th>ID</th>
-                    <th>User id</th>
-                    <th>Plan</th>
-                    <th>Start Date</th>
-                    <th>End Date</th>
-                    <th>Duration</th>
-                    <th>Status</th>
-                    <th>Created</th>
+                    <th>ID пользователя</th>
+                    <th>Тариф</th>
+                    <th>Дата начала</th>
+                    <th>Дата окончания</th>
+                    <th>Длительность</th>
+                    <th>Статус</th>
+                    <th>Создана</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -254,7 +254,7 @@ export default function AllSubscriptions() {
                         <td>
                           <div>
                             <div style={{ fontWeight: 500 }}>
-                              {subscription.userId || 'Unknown User'}
+                              {subscription.userId || 'Неизвестный пользователь'}
                             </div>
                             {/* {subscription.userId && (
                               <div style={{ fontSize: '0.75rem', color: 'var(--gray-600)' }}>
@@ -280,7 +280,7 @@ export default function AllSubscriptions() {
                             {expiringSoon && subscription.isActive && (
                               <div>
                                 <span className="badge badge-info" style={{ fontSize: '0.7rem', marginTop: '4px' }}>
-                                  {daysRemaining} days left
+                                  Осталось {daysRemaining} дн.
                                 </span>
                               </div>
                             )}
@@ -288,7 +288,7 @@ export default function AllSubscriptions() {
                         </td>
                         <td>
                           <div style={{ fontSize: '0.875rem' }}>
-                            {subscription.isActive ? `${daysSinceStart}/${daysTotal} days` : `${daysTotal} days`}
+                            {subscription.isActive ? `${daysSinceStart}/${daysTotal} дн.` : `${daysTotal} дн.`}
                           </div>
                           {subscription.isActive && (
                             <div style={{ width: '100%', height: '4px', background: 'var(--gray-200)', borderRadius: '2px', marginTop: '4px' }}>
@@ -306,7 +306,7 @@ export default function AllSubscriptions() {
                         </td>
                         <td>
                           <span className={getStatusBadgeClass(subscription.isActive)}>
-                            {subscription.isActive ? '● Active' : '○ Inactive'}
+                            {subscription.isActive ? '● Активна' : '○ Неактивна'}
                           </span>
                         </td>
                         <td>{formatDate(subscription.createdAt)}</td>
@@ -321,8 +321,8 @@ export default function AllSubscriptions() {
 
         {!loading && subscriptions && subscriptions.length > 0 && filteredSubscriptions.length === 0 && (
           <EmptyState 
-            title="No subscriptions match your filters"
-            description="Try adjusting your search or filter criteria"
+            title="Подписки не соответствуют фильтрам"
+            description="Попробуйте изменить параметры поиска или фильтрации"
           />
         )}
       </div>

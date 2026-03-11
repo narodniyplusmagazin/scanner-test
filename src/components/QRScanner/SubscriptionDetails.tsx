@@ -36,7 +36,7 @@ const SubscriptionDetails: React.FC<SubscriptionDetailsProps> = ({ subscriptionI
         if (mounted) {
           setUserError(axios.isAxiosError(error) 
             ? error.response?.data?.message || error.message 
-            : 'Failed to fetch user')
+            : 'Не удалось загрузить пользователя')
         }
       } finally {
         if (mounted) {
@@ -58,7 +58,7 @@ const SubscriptionDetails: React.FC<SubscriptionDetailsProps> = ({ subscriptionI
         if (mounted) {
           setSubscriptionError(axios.isAxiosError(error) 
             ? error.response?.data?.message || error.message 
-            : 'Failed to fetch subscription')
+            : 'Не удалось загрузить подписку')
         }
       } finally {
         if (mounted) {
@@ -86,7 +86,7 @@ const SubscriptionDetails: React.FC<SubscriptionDetailsProps> = ({ subscriptionI
             <circle cx="12" cy="12" r="10" opacity="0.25" />
             <path d="M12 2 A10 10 0 0 1 22 12" strokeLinecap="round" />
           </svg>
-          <span>Loading details...</span>
+          <span>Загрузка данных...</span>
         </div>
       </div>
     )
@@ -102,7 +102,7 @@ const SubscriptionDetails: React.FC<SubscriptionDetailsProps> = ({ subscriptionI
             <line x1="12" y1="8" x2="12" y2="12" />
             <line x1="12" y1="16" x2="12.01" y2="16" />
           </svg>
-          <span>User Error: {userError}</span>
+          <span>Ошибка пользователя: {userError}</span>
         </div>
       ) : user ? (
         <details open style={{ 
@@ -127,7 +127,7 @@ const SubscriptionDetails: React.FC<SubscriptionDetailsProps> = ({ subscriptionI
               <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
               <circle cx="12" cy="7" r="4" />
             </svg>
-            User Information
+            Данные пользователя
           </summary>
           <div style={{ 
             display: 'grid', 
@@ -140,7 +140,7 @@ const SubscriptionDetails: React.FC<SubscriptionDetailsProps> = ({ subscriptionI
               background: 'var(--gray-50)',
               borderRadius: '6px'
             }}>
-              <strong style={{ minWidth: '100px', color: 'var(--gray-600)' }}>Name:</strong>
+              <strong style={{ minWidth: '100px', color: 'var(--gray-600)' }}>Имя:</strong>
               <span style={{ color: 'var(--gray-800)' }}>{user.fullName}</span>
             </div>
             {user.email && (
@@ -150,7 +150,7 @@ const SubscriptionDetails: React.FC<SubscriptionDetailsProps> = ({ subscriptionI
                 background: 'var(--gray-50)',
                 borderRadius: '6px'
               }}>
-                <strong style={{ minWidth: '100px', color: 'var(--gray-600)' }}>Email:</strong>
+                <strong style={{ minWidth: '100px', color: 'var(--gray-600)' }}>Эл. почта:</strong>
                 <span style={{ color: 'var(--gray-800)' }}>{user.email}</span>
               </div>
             )}
@@ -161,7 +161,7 @@ const SubscriptionDetails: React.FC<SubscriptionDetailsProps> = ({ subscriptionI
                 background: 'var(--gray-50)',
                 borderRadius: '6px'
               }}>
-                <strong style={{ minWidth: '100px', color: 'var(--gray-600)' }}>Phone:</strong>
+                <strong style={{ minWidth: '100px', color: 'var(--gray-600)' }}>Телефон:</strong>
                 <span style={{ color: 'var(--gray-800)' }}>{user.phone}</span>
               </div>
             )}
@@ -171,7 +171,7 @@ const SubscriptionDetails: React.FC<SubscriptionDetailsProps> = ({ subscriptionI
               background: 'var(--gray-50)',
               borderRadius: '6px'
             }}>
-              <strong style={{ minWidth: '100px', color: 'var(--gray-600)' }}>Gender:</strong>
+              <strong style={{ minWidth: '100px', color: 'var(--gray-600)' }}>Пол:</strong>
               <span style={{ color: 'var(--gray-800)' }}>{user.gender}</span>
             </div>
             <div style={{ 
@@ -180,7 +180,7 @@ const SubscriptionDetails: React.FC<SubscriptionDetailsProps> = ({ subscriptionI
               background: 'var(--gray-50)',
               borderRadius: '6px'
             }}>
-              <strong style={{ minWidth: '100px', color: 'var(--gray-600)' }}>User ID:</strong>
+              <strong style={{ minWidth: '100px', color: 'var(--gray-600)' }}>ID пользователя:</strong>
               <span style={{ 
                 color: 'var(--gray-800)', 
                 fontFamily: 'monospace',
@@ -199,7 +199,7 @@ const SubscriptionDetails: React.FC<SubscriptionDetailsProps> = ({ subscriptionI
             <line x1="12" y1="8" x2="12" y2="12" />
             <line x1="12" y1="16" x2="12.01" y2="16" />
           </svg>
-          <span>Subscription Error: {subscriptionError}</span>
+          <span>Ошибка подписки: {subscriptionError}</span>
         </div>
       ) : subscription ? (
         <details open style={{ 
@@ -223,7 +223,7 @@ const SubscriptionDetails: React.FC<SubscriptionDetailsProps> = ({ subscriptionI
               <rect x="1" y="4" width="22" height="16" rx="2" ry="2" />
               <line x1="1" y1="10" x2="23" y2="10" />
             </svg>
-            Subscription Information
+            Информация о подписке
           </summary>
           <div style={{ 
             display: 'grid', 
@@ -237,7 +237,7 @@ const SubscriptionDetails: React.FC<SubscriptionDetailsProps> = ({ subscriptionI
                 background: 'var(--gray-50)',
                 borderRadius: '6px'
               }}>
-                <strong style={{ minWidth: '100px', color: 'var(--gray-600)' }}>Plan:</strong>
+                <strong style={{ minWidth: '100px', color: 'var(--gray-600)' }}>Тариф:</strong>
                 <span style={{ color: 'var(--gray-800)', fontWeight: '600' }}>{subscription.plan.name}</span>
               </div>
             )}
@@ -247,9 +247,9 @@ const SubscriptionDetails: React.FC<SubscriptionDetailsProps> = ({ subscriptionI
               background: 'var(--gray-50)',
               borderRadius: '6px'
             }}>
-              <strong style={{ minWidth: '100px', color: 'var(--gray-600)' }}>Status:</strong>
+              <strong style={{ minWidth: '100px', color: 'var(--gray-600)' }}>Статус:</strong>
               <span className={`badge ${subscription.isActive ? 'badge-success' : 'badge-inactive'}`}>
-                {subscription.isActive ? '● Active' : '○ Inactive'}
+                {subscription.isActive ? '● Активна' : '○ Неактивна'}
               </span>
             </div>
             <div style={{ 
@@ -258,9 +258,9 @@ const SubscriptionDetails: React.FC<SubscriptionDetailsProps> = ({ subscriptionI
               background: 'var(--gray-50)',
               borderRadius: '6px'
             }}>
-              <strong style={{ minWidth: '100px', color: 'var(--gray-600)' }}>Start Date:</strong>
+              <strong style={{ minWidth: '100px', color: 'var(--gray-600)' }}>Дата начала:</strong>
               <span style={{ color: 'var(--gray-800)' }}>
-                {new Date(subscription.startDate).toLocaleDateString('en-US', { 
+                {new Date(subscription.startDate).toLocaleDateString('ru-RU', {
                   year: 'numeric', 
                   month: 'long', 
                   day: 'numeric' 
@@ -273,9 +273,9 @@ const SubscriptionDetails: React.FC<SubscriptionDetailsProps> = ({ subscriptionI
               background: 'var(--gray-50)',
               borderRadius: '6px'
             }}>
-              <strong style={{ minWidth: '100px', color: 'var(--gray-600)' }}>End Date:</strong>
+              <strong style={{ minWidth: '100px', color: 'var(--gray-600)' }}>Дата окончания:</strong>
               <span style={{ color: 'var(--gray-800)' }}>
-                {new Date(subscription.endDate).toLocaleDateString('en-US', { 
+                {new Date(subscription.endDate).toLocaleDateString('ru-RU', {
                   year: 'numeric', 
                   month: 'long', 
                   day: 'numeric' 
@@ -288,7 +288,7 @@ const SubscriptionDetails: React.FC<SubscriptionDetailsProps> = ({ subscriptionI
                 background: 'var(--gray-50)',
                 borderRadius: '6px'
               }}>
-                <strong style={{ color: 'var(--gray-600)', display: 'block', marginBottom: '4px' }}>Description:</strong>
+                <strong style={{ color: 'var(--gray-600)', display: 'block', marginBottom: '4px' }}>Описание:</strong>
                 <span style={{ color: 'var(--gray-800)' }}>{subscription.plan.description}</span>
               </div>
             )}
@@ -298,7 +298,7 @@ const SubscriptionDetails: React.FC<SubscriptionDetailsProps> = ({ subscriptionI
                 background: 'var(--gray-50)',
                 borderRadius: '6px'
               }}>
-                <strong style={{ color: 'var(--gray-600)', display: 'block', marginBottom: '8px' }}>Features:</strong>
+                <strong style={{ color: 'var(--gray-600)', display: 'block', marginBottom: '8px' }}>Возможности:</strong>
                 <ul style={{ margin: 0, paddingLeft: '20px' }}>
                   {subscription.plan.features.map((feature, index) => (
                     <li key={index} style={{ color: 'var(--gray-800)', marginBottom: '4px' }}>
@@ -314,7 +314,7 @@ const SubscriptionDetails: React.FC<SubscriptionDetailsProps> = ({ subscriptionI
               background: 'var(--gray-50)',
               borderRadius: '6px'
             }}>
-              <strong style={{ minWidth: '100px', color: 'var(--gray-600)' }}>Subscription ID:</strong>
+              <strong style={{ minWidth: '100px', color: 'var(--gray-600)' }}>ID подписки:</strong>
               <span style={{ 
                 color: 'var(--gray-800)', 
                 fontFamily: 'monospace',
@@ -327,7 +327,7 @@ const SubscriptionDetails: React.FC<SubscriptionDetailsProps> = ({ subscriptionI
 
       {!hasErrors && !user && !subscription && (
         <div style={{ padding: '16px', textAlign: 'center', color: 'var(--gray-500)' }}>
-          No additional details available
+          Дополнительные данные отсутствуют
         </div>
       )}
     </div>

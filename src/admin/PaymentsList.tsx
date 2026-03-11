@@ -18,7 +18,7 @@ export default function PaymentsList() {
   // Fetch all payments for a specific user
   const fetchUserPayments = async (userId: string) => {
     if (!userId.trim()) {
-      setError('Please enter a user ID');
+      setError('Пожалуйста, введите ID пользователя');
       return;
     }
 
@@ -38,7 +38,7 @@ export default function PaymentsList() {
         setError(
           err.response?.data?.message ||
           err.message ||
-          'Failed to fetch payments'
+          'Не удалось загрузить платежи'
         );
       }
     } finally {
@@ -85,28 +85,28 @@ export default function PaymentsList() {
   };
 
   return (
-    <Layout title="User Payments">
+    <Layout title="Платежи пользователя">
       <div className="admin-container">
         {/* Search Form */}
         <div className="card">
-          <h2>Search User Payments</h2>
+          <h2>Поиск платежей пользователя</h2>
           <form onSubmit={handleSearch} style={{ marginTop: 'var(--spacing-lg)' }}>
             <div style={{ display: 'flex', gap: 'var(--spacing-md)', alignItems: 'flex-end' }}>
               <div style={{ flex: 1 }}>
                 <label htmlFor="userId" style={{ display: 'block', marginBottom: 'var(--spacing-xs)', color: 'var(--gray-700)', fontSize: '0.875rem', fontWeight: 500 }}>
-                  User ID
+                  ID пользователя
                 </label>
                 <input
                   id="userId"
                   type="text"
                   className="form-input"
-                  placeholder="Enter user ID (UUID)"
+                  placeholder="Введите ID пользователя (UUID)"
                   value={selectedUserId}
                   onChange={(e) => setSelectedUserId(e.target.value)}
                 />
               </div>
               <button type="submit" className="btn btn-primary" disabled={loading}>
-                {loading ? 'Searching...' : 'Search'}
+                {loading ? 'Поиск...' : 'Найти'}
               </button>
             </div>
           </form>
@@ -125,7 +125,7 @@ export default function PaymentsList() {
         {/* Empty State */}
         {!loading && payments && payments.length === 0 && (
           <EmptyState 
-            title="No payments found for this user"
+            title="Платежи для этого пользователя не найдены"
             icon={
               <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" d="M2.25 8.25h19.5M2.25 9h19.5m-16.5 5.25h6m-6 2.25h3m-3.75 3h15a2.25 2.25 0 002.25-2.25V6.75A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25v10.5A2.25 2.25 0 004.5 19.5z" />
@@ -138,9 +138,9 @@ export default function PaymentsList() {
         {!loading && payments && payments.length > 0 && (
           <div className="card">
             <h2>
-              Payment History
+              История платежей
               <span style={{ marginLeft: 'var(--spacing-sm)', color: 'var(--gray-500)', fontWeight: 'normal', fontSize: '1rem' }}>
-                ({payments.length} {payments.length === 1 ? 'payment' : 'payments'})
+                ({payments.length})
               </span>
             </h2>
             
@@ -148,13 +148,13 @@ export default function PaymentsList() {
               <table className="data-table">
                 <thead>
                   <tr>
-                    <th>Date</th>
+                    <th>Дата</th>
                     <th>YooKassa ID</th>
-                    <th>Amount</th>
-                    <th>Status</th>
-                    <th>Description</th>
-                    <th>Subscription</th>
-                    <th>Actions</th>
+                    <th>Сумма</th>
+                    <th>Статус</th>
+                    <th>Описание</th>
+                    <th>Подписка</th>
+                    <th>Действия</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -192,12 +192,12 @@ export default function PaymentsList() {
                             rel="noopener noreferrer"
                             className="btn btn-sm btn-primary"
                           >
-                            Pay
+                            Оплатить
                           </a>
                         )}
                         {payment.status === 'succeeded' && (
                           <span style={{ color: 'var(--success-color)', fontSize: '0.875rem' }}>
-                            ✓ Paid
+                            ✓ Оплачено
                           </span>
                         )}
                       </td>
@@ -219,7 +219,7 @@ export default function PaymentsList() {
             }}>
               <div>
                 <div style={{ fontSize: '0.875rem', color: 'var(--gray-600)', marginBottom: 'var(--spacing-xs)' }}>
-                  Total Payments
+                  Всего платежей
                 </div>
                 <div style={{ fontSize: '1.5rem', fontWeight: 600, color: 'var(--gray-900)' }}>
                   {payments.length}
@@ -227,7 +227,7 @@ export default function PaymentsList() {
               </div>
               <div>
                 <div style={{ fontSize: '0.875rem', color: 'var(--gray-600)', marginBottom: 'var(--spacing-xs)' }}>
-                  Total Amount
+                  Общая сумма
                 </div>
                 <div style={{ fontSize: '1.5rem', fontWeight: 600, color: 'var(--gray-900)' }}>
                   {formatAmount(
@@ -238,7 +238,7 @@ export default function PaymentsList() {
               </div>
               <div>
                 <div style={{ fontSize: '0.875rem', color: 'var(--gray-600)', marginBottom: 'var(--spacing-xs)' }}>
-                  Succeeded
+                  Успешно
                 </div>
                 <div style={{ fontSize: '1.5rem', fontWeight: 600, color: 'var(--success-color)' }}>
                   {payments.filter(p => p.status === 'succeeded').length}
@@ -246,7 +246,7 @@ export default function PaymentsList() {
               </div>
               <div>
                 <div style={{ fontSize: '0.875rem', color: 'var(--gray-600)', marginBottom: 'var(--spacing-xs)' }}>
-                  Pending
+                  В ожидании
                 </div>
                 <div style={{ fontSize: '1.5rem', fontWeight: 600, color: 'var(--info-color)' }}>
                   {payments.filter(p => p.status === 'pending').length}

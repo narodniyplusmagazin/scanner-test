@@ -33,7 +33,7 @@ export default function UsersList() {
       .then(response => { if (mounted) setUsers(response.data) })
       .catch((error) => { 
         if (mounted) {
-          setLoadError(error.response?.data?.message || error.message || 'Failed to load users')
+          setLoadError(error.response?.data?.message || error.message || 'Не удалось загрузить пользователей')
           setUsers([])
         }
       })
@@ -55,7 +55,7 @@ export default function UsersList() {
       .then(response => { if (mounted) setSubscriptions(response.data) })
       .catch((error) => {
         if (mounted) {
-          setSubscriptionsError(error.response?.data?.message || error.message || 'Failed to load subscriptions')
+          setSubscriptionsError(error.response?.data?.message || error.message || 'Не удалось загрузить подписки')
           setSubscriptions([])
         }
       })
@@ -76,7 +76,7 @@ export default function UsersList() {
       .then(response => { if (mounted) setPayments(response.data) })
       .catch((error) => {
         if (mounted) {
-          setPaymentsError(error.response?.data?.message || error.message || 'Failed to load payments')
+          setPaymentsError(error.response?.data?.message || error.message || 'Не удалось загрузить платежи')
           setPayments([])
         }
       })
@@ -84,7 +84,7 @@ export default function UsersList() {
   }, [selectedUserId])
 
   const handleDelete = async (userId: string) => {
-    if (!confirm('Are you sure you want to delete this user?')) return
+    if (!confirm('Вы уверены, что хотите удалить этого пользователя?')) return
 
     setDeleting(userId)
     setDeleteError(null)
@@ -104,7 +104,7 @@ export default function UsersList() {
       if (axios.isAxiosError(error)) {
         setDeleteError(error.response?.data?.message || error.message)
       } else {
-        setDeleteError('Failed to delete user')
+        setDeleteError('Не удалось удалить пользователя')
       }
     } finally {
       setDeleting(null)
@@ -118,7 +118,7 @@ export default function UsersList() {
 
   const handleCreateSubscription = () => {
     if (!selectedUserId) {
-      alert('Please select a user first')
+      alert('Сначала выберите пользователя')
       return
     }
     setShowCreateModal(true)
@@ -134,7 +134,7 @@ export default function UsersList() {
       axios.get<MySubscription[]>(API_BASE_URL+`/subscriptions/my-subscriptions/${selectedUserId}`)
         .then(response => setSubscriptions(response.data))
         .catch((error) => {
-          setSubscriptionsError(error.response?.data?.message || error.message || 'Failed to load subscriptions')
+          setSubscriptionsError(error.response?.data?.message || error.message || 'Не удалось загрузить подписки')
           setSubscriptions([])
         })
     }
@@ -155,13 +155,13 @@ export default function UsersList() {
   
   
   if (!users) return (
-    <Layout title="Users">
-      <LoadingSpinner message="Loading users..." />
+    <Layout title="Пользователи">
+      <LoadingSpinner message="Загрузка пользователей..." />
     </Layout>
   )
 
   if (loadError) return (
-    <Layout title="Users">
+    <Layout title="Пользователи">
       <ErrorMessage 
         message={loadError}
         onRetry={() => window.location.reload()}
@@ -170,7 +170,7 @@ export default function UsersList() {
   )
 
   return (
-    <Layout title="Users">
+    <Layout title="Пользователи">
       <div className="admin-container">
         {deleteError && (
           <div className="alert alert-error">
@@ -194,14 +194,14 @@ export default function UsersList() {
                 <path d="M16 3.13a4 4 0 0 1 0 7.75" />
               </svg>
             }
-            title="No users yet"
-            description="Create your first user to get started."
+            title="Пользователей пока нет"
+            description="Создайте первого пользователя, чтобы начать."
           />
         ) : (
           <div className="card">
             <div className="card-header">
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '16px', flexWrap: 'wrap' }}>
-                <h3 className="card-title">All Users ({users.length})</h3>
+                <h3 className="card-title">Все пользователи ({users.length})</h3>
                 <div className="search-box">
                   <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                     <circle cx="11" cy="11" r="8" />
@@ -209,7 +209,7 @@ export default function UsersList() {
                   </svg>
                   <input
                     type="text"
-                    placeholder="Search users..."
+                    placeholder="Поиск пользователей..."
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
                     className="search-input"
@@ -224,12 +224,12 @@ export default function UsersList() {
               <table className="data-table">
                 <thead>
                   <tr>
-                    <th>Full Name</th>
-                    <th>Phone</th>
+                    <th>Имя</th>
+                    <th>Телефон</th>
                     <th>Email</th>
-                    <th>Gender</th>
-                    <th>Created</th>
-                    <th className="actions-column">Actions</th>
+                    <th>Пол</th>
+                    <th>Дата создания</th>
+                    <th className="actions-column">Действия</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -237,8 +237,8 @@ export default function UsersList() {
                     <tr>
                       <td colSpan={7} style={{ textAlign: 'center', padding: '48px' }}>
                         <EmptyState
-                          title="No users found"
-                          description={searchQuery ? `No users match "${searchQuery}"` : "No users in the system"}
+                          title="Пользователи не найдены"
+                          description={searchQuery ? `Нет пользователей, совпадающих с "${searchQuery}"` : "В системе нет пользователей"}
                         />
                       </td>
                     </tr>
@@ -269,14 +269,14 @@ export default function UsersList() {
                             onClick={() => handleSelectUser(u)}
                             className={`btn btn-sm ${selectedUserId === u.id ? 'btn-primary-active' : 'btn-primary'}`}
                           >
-                            {selectedUserId === u.id ? '✓ Selected' : 'View Details'}
+                            {selectedUserId === u.id ? '✓ Выбран' : 'Подробнее'}
                           </button>
                           <button
                             onClick={() => handleDelete(u.id)}
                             disabled={deleting === u.id}
                             className="btn btn-sm btn-danger"
                           >
-                            {deleting === u.id ? 'Deleting...' : 'Delete'}
+                            {deleting === u.id ? 'Удаление...' : 'Удалить'}
                           </button>
                         </div>
                       </td>
@@ -289,7 +289,7 @@ export default function UsersList() {
         )}
 
         <div className="subscriptions-section">
-          <h2 className="section-title">User Details</h2>
+          <h2 className="section-title">Данные пользователя</h2>
           {!selectedUserId || !selectedUser ? (
             <EmptyState
               icon={
@@ -298,8 +298,8 @@ export default function UsersList() {
                   <circle cx="12" cy="7" r="4" />
                 </svg>
               }
-              title="No user selected"
-              description="Select a user from the table above to view their details and subscriptions."
+              title="Пользователь не выбран"
+              description="Выберите пользователя из таблицы выше, чтобы просмотреть его данные и подписки."
             />
           ) : (
             <>
@@ -324,7 +324,7 @@ export default function UsersList() {
                         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                           <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z" />
                         </svg>
-                        Phone
+                        Телефон
                       </div>
                       <div className="detail-value">{selectedUser.phone || '—'}</div>
                     </div>
@@ -344,7 +344,7 @@ export default function UsersList() {
                           <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
                           <circle cx="12" cy="7" r="4" />
                         </svg>
-                        Gender
+                        Пол
                       </div>
                       <div className="detail-value">
                         <span className="badge badge-neutral">{selectedUser.gender}</span>
@@ -358,7 +358,7 @@ export default function UsersList() {
                           <line x1="8" y1="2" x2="8" y2="6" />
                           <line x1="3" y1="10" x2="21" y2="10" />
                         </svg>
-                        Created
+                        Дата создания
                       </div>
                       <div className="detail-value">{new Date(selectedUser.createdAt).toLocaleString()}</div>
                     </div>
@@ -367,7 +367,7 @@ export default function UsersList() {
                         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                           <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
                         </svg>
-                        Last Updated
+                        Последнее обновление
                       </div>
                       <div className="detail-value">{new Date(selectedUser.updatedAt).toLocaleString()}</div>
                     </div>
@@ -377,7 +377,7 @@ export default function UsersList() {
                           <rect x="1" y="4" width="22" height="16" rx="2" ry="2" />
                           <line x1="1" y1="10" x2="23" y2="10" />
                         </svg>
-                        Total Subscriptions
+                        Всего подписок
                       </div>
                       <div className="detail-value">
                         <span className="badge badge-info" style={{ fontSize: '14px' }}>
@@ -392,7 +392,7 @@ export default function UsersList() {
               <div className="card">
                 <div className="card-header">
                   <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                    <h3 className="card-title">Subscription History</h3>
+                    <h3 className="card-title">История подписок</h3>
                     <button
                       onClick={handleCreateSubscription}
                       className="btn btn-success"
@@ -401,7 +401,7 @@ export default function UsersList() {
                         <line x1="12" y1="5" x2="12" y2="19" />
                         <line x1="5" y1="12" x2="19" y2="12" />
                       </svg>
-                      Create Subscription
+                      Создать подписку
                     </button>
                   </div>
                 </div>
@@ -419,13 +419,13 @@ export default function UsersList() {
 
                 {!subscriptions ? (
                   <div style={{ padding: '48px 24px' }}>
-                    <LoadingSpinner size="small" message="Loading subscriptions..." />
+                    <LoadingSpinner size="small" message="Загрузка подписок..." />
                   </div>
                 ) : subscriptions.length === 0 ? (
                   <div style={{ padding: '32px 24px' }}>
                     <EmptyState
-                      title="No subscriptions"
-                      description="This user doesn't have any subscriptions yet."
+                      title="Нет подписок"
+                      description="У этого пользователя пока нет подписок."
                     />
                   </div>
                 ) : (
@@ -434,11 +434,11 @@ export default function UsersList() {
                       <thead>
                         <tr>
                           <th>ID</th>
-                          <th>Plan</th>
-                          <th>Start Date</th>
-                          <th>End Date</th>
-                          <th>Status</th>
-                          <th>Created</th>
+                          <th>Тариф</th>
+                          <th>Дата начала</th>
+                          <th>Дата окончания</th>
+                          <th>Статус</th>
+                          <th>Дата создания</th>
                         </tr>
                       </thead>
                       <tbody>
@@ -451,7 +451,7 @@ export default function UsersList() {
                             <td>{new Date(sub.endDate).toLocaleDateString()}</td>
                             <td>
                               <span className={`badge ${sub.isActive ? 'badge-success' : 'badge-inactive'}`}>
-                                {sub.isActive ? '● Active' : '○ Inactive'}
+                                {sub.isActive ? '● Активна' : '○ Неактивна'}
                               </span>
                             </td>
                             <td>{new Date(sub.createdAt).toLocaleDateString()}</td>
@@ -465,7 +465,7 @@ export default function UsersList() {
 
               <div className="card" style={{ marginTop: 'var(--spacing-lg)' }}>
                 <div className="card-header">
-                  <h3 className="card-title">Payment History</h3>
+                  <h3 className="card-title">История платежей</h3>
                 </div>
 
                 {paymentsError && (
@@ -481,13 +481,13 @@ export default function UsersList() {
 
                 {!payments ? (
                   <div style={{ padding: '48px 24px' }}>
-                    <LoadingSpinner size="small" message="Loading payments..." />
+                    <LoadingSpinner size="small" message="Загрузка платежей..." />
                   </div>
                 ) : payments.length === 0 ? (
                   <div style={{ padding: '32px 24px' }}>
                     <EmptyState
-                      title="No payments"
-                      description="This user hasn't made any payments yet."
+                      title="Нет платежей"
+                      description="Этот пользователь ещё не совершал платежей."
                       icon={
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                           <rect x="2" y="5" width="20" height="14" rx="2" />
@@ -502,11 +502,11 @@ export default function UsersList() {
                       <table className="data-table">
                         <thead>
                           <tr>
-                            <th>Date</th>
+                            <th>Дата</th>
                             <th>YooKassa ID</th>
-                            <th>Amount</th>
-                            <th>Status</th>
-                            <th>Description</th>
+                            <th>Сумма</th>
+                            <th>Статус</th>
+                            <th>Описание</th>
                           </tr>
                         </thead>
                         <tbody>
@@ -547,7 +547,7 @@ export default function UsersList() {
                     }}>
                       <div>
                         <div style={{ fontSize: '0.875rem', color: 'var(--gray-600)', marginBottom: 'var(--spacing-xs)' }}>
-                          Total Payments
+                          Всего платежей
                         </div>
                         <div style={{ fontSize: '1.5rem', fontWeight: 600, color: 'var(--gray-900)' }}>
                           {payments.length}
@@ -555,7 +555,7 @@ export default function UsersList() {
                       </div>
                       <div>
                         <div style={{ fontSize: '0.875rem', color: 'var(--gray-600)', marginBottom: 'var(--spacing-xs)' }}>
-                          Total Amount
+                          Общая сумма
                         </div>
                         <div style={{ fontSize: '1.5rem', fontWeight: 600, color: 'var(--gray-900)' }}>
                           {payments.reduce((sum, p) => sum + Number(p.amount), 0).toLocaleString('ru-RU', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} {payments[0]?.currency || 'RUB'}
@@ -563,7 +563,7 @@ export default function UsersList() {
                       </div>
                       <div>
                         <div style={{ fontSize: '0.875rem', color: 'var(--gray-600)', marginBottom: 'var(--spacing-xs)' }}>
-                          Succeeded
+                          Успешно
                         </div>
                         <div style={{ fontSize: '1.5rem', fontWeight: 600, color: 'var(--success-color)' }}>
                           {payments.filter(p => p.status === 'succeeded').length}
@@ -571,7 +571,7 @@ export default function UsersList() {
                       </div>
                       <div>
                         <div style={{ fontSize: '0.875rem', color: 'var(--gray-600)', marginBottom: 'var(--spacing-xs)' }}>
-                          Pending
+                          В ожидании
                         </div>
                         <div style={{ fontSize: '1.5rem', fontWeight: 600, color: 'var(--info-color)' }}>
                           {payments.filter(p => p.status === 'pending').length}

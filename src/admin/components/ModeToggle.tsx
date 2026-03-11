@@ -14,7 +14,7 @@ export default function ModeToggle({ mode, hasPlan, onSwitchToEdit, onSwitchToCr
         disabled={mode === 'edit' || !hasPlan}
         className={`btn btn-sm ${mode === 'edit' ? 'btn-primary-active' : 'btn-primary'}`}
       >
-        Edit Mode
+        Редактирование
       </button>
       <button
         type="button"
@@ -22,7 +22,7 @@ export default function ModeToggle({ mode, hasPlan, onSwitchToEdit, onSwitchToCr
         disabled={mode === 'create'}
         className={`btn btn-sm ${mode === 'create' ? 'btn-success' : 'btn-primary'}`}
       >
-        Create New
+        Создать новый
       </button>
     </div>
   )

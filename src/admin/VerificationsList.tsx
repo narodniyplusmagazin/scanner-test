@@ -68,6 +68,7 @@ export default function VerificationsList() {
   const [verifications, setVerifications] = useState<VerificationRecord[] | null>(null);
   const [loading, setLoading] = useState(true);
   const [deletingAll, setDeletingAll] = useState(false);
+  const [deletingId, setDeletingId] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
 
@@ -91,7 +92,7 @@ export default function VerificationsList() {
         setError(
           axiosError.response?.data?.message ||
           axiosError.message ||
-          'Failed to load auth verifications'
+          'Не удалось загрузить верификации'
         );
         setVerifications([]);
       }
@@ -127,7 +128,7 @@ export default function VerificationsList() {
           setError(
             axiosError.response?.data?.message ||
             axiosError.message ||
-            'Failed to load auth verifications'
+            'Не удалось загрузить верификации'
           );
           setVerifications([]);
         }
@@ -144,7 +145,7 @@ export default function VerificationsList() {
   }, []);
 
   const handleDeleteAll = async () => {
-    if (!window.confirm('Delete all verifications? This action cannot be undone.')) {
+    if (!window.confirm('Удалить все верификации? Это действие нельзя отменить.')) {
       return;
     }
 
@@ -155,7 +156,7 @@ export default function VerificationsList() {
     try {
       await axios.delete(`${API_BASE_URL}/auth/verifications`);
       await fetchVerifications();
-      setSuccessMessage('All verifications were deleted successfully.');
+      setSuccessMessage('Все верификации успешно удалены.');
     } catch (err: unknown) {
       const axiosError = err as {
         response?: { data?: { message?: string } };
@@ -164,17 +165,50 @@ export default function VerificationsList() {
       setError(
         axiosError.response?.data?.message ||
         axiosError.message ||
-        'Failed to delete all verifications'
+        'Не удалось удалить все верификации'
       );
     } finally {
       setDeletingAll(false);
     }
   };
 
+  const handleDeleteOne = async (verificationId: string) => {
+    if (!verificationId || verificationId === '—') {
+      setError('Невозможно удалить верификацию без ID');
+      return;
+    }
+
+    if (!window.confirm('Удалить эту верификацию?')) {
+      return;
+    }
+
+    setDeletingId(verificationId);
+    setError(null);
+    setSuccessMessage(null);
+
+    try {
+      await axios.delete(`${API_BASE_URL}/auth/verifications/${verificationId}`);
+      await fetchVerifications();
+      setSuccessMessage('Верификация успешно удалена.');
+    } catch (err: unknown) {
+      const axiosError = err as {
+        response?: { data?: { message?: string } };
+        message?: string;
+      };
+      setError(
+        axiosError.response?.data?.message ||
+        axiosError.message ||
+        'Не удалось удалить верификацию'
+      );
+    } finally {
+      setDeletingId(null);
+    }
+  };
+
   const totalCount = useMemo(() => verifications?.length ?? 0, [verifications]);
 
   return (
-    <Layout title="Auth Verifications">
+    <Layout title="Верификации">
       <div className="admin-container">
         <div className="card" style={{ padding: 'var(--spacing-lg)' }}>
           <div
@@ -187,9 +221,9 @@ export default function VerificationsList() {
             }}
           >
             <div>
-              <h2 style={{ marginBottom: 'var(--spacing-xs)' }}>All Verifications</h2>
+              <h2 style={{ marginBottom: 'var(--spacing-xs)' }}>Все верификации</h2>
               <p style={{ margin: 0, color: 'var(--gray-600)' }}>
-                Total records: {totalCount}
+                Всего записей: {totalCount}
               </p>
             </div>
             <button
@@ -198,7 +232,7 @@ export default function VerificationsList() {
               onClick={handleDeleteAll}
               disabled={deletingAll || loading || totalCount === 0}
             >
-              {deletingAll ? 'Deleting...' : 'Delete All Verifications'}
+              {deletingAll ? 'Удаление...' : 'Удалить все верификации'}
             </button>
           </div>
         </div>
@@ -214,7 +248,7 @@ export default function VerificationsList() {
         {loading && <LoadingSpinner size="large" />}
 
         {!loading && verifications && verifications.length === 0 && (
-          <EmptyState title="No verifications found" />
+          <EmptyState title="Верификации не найдены" />
         )}
 
         {!loading && verifications && verifications.length > 0 && (
@@ -224,11 +258,12 @@ export default function VerificationsList() {
                 <thead>
                   <tr>
                     <th>ID</th>
-                    <th>User ID</th>
-                    <th>Type</th>
-                    <th>Status</th>
-                    <th>Created At</th>
-                    <th>Payload</th>
+                    <th>ID пользователя</th>
+                    <th>Тип</th>
+                    <th>Статус</th>
+                    <th>Дата создания</th>
+                    <th>Данные</th>
+                    <th>Действия</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -255,6 +290,16 @@ export default function VerificationsList() {
                           <code style={{ fontSize: '0.75rem', color: 'var(--gray-700)' }}>
                             {toPayloadPreview(verification)}
                           </code>
+                        </td>
+                        <td className="actions-column">
+                          <button
+                            type="button"
+                            className="btn btn-sm btn-danger"
+                            onClick={() => handleDeleteOne(id)}
+                            disabled={deletingAll || deletingId === id || id === '—'}
+                          >
+                            {deletingId === id ? 'Удаление...' : 'Удалить'}
+                          </button>
                         </td>
                       </tr>
                     );
