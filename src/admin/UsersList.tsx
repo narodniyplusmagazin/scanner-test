@@ -170,7 +170,7 @@ export default function UsersList() {
   )
 
   return (
-    <Layout title="Пользователи">
+    <Layout title={`Пользователи (${users.length})`}>
       <div className="admin-container">
         {deleteError && (
           <div className="alert alert-error">
@@ -201,7 +201,9 @@ export default function UsersList() {
           <div className="card">
             <div className="card-header">
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '16px', flexWrap: 'wrap' }}>
-                <h3 className="card-title">Все пользователи ({users.length})</h3>
+                <h3 className="card-title">
+                  Все пользователи ({searchQuery ? `${filteredUsers.length} из ${users.length}` : users.length})
+                </h3>
                 <div className="search-box">
                   <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                     <circle cx="11" cy="11" r="8" />
@@ -433,7 +435,7 @@ export default function UsersList() {
                     <table className="data-table">
                       <thead>
                         <tr>
-                          <th>ID</th>
+                          {/* <th>ID</th> */}
                           <th>Тариф</th>
                           <th>Дата начала</th>
                           <th>Дата окончания</th>
@@ -445,7 +447,7 @@ export default function UsersList() {
                         {subscriptions.map(sub => (
                           <tr key={sub.id}>
                             <td>
-                              <strong>{sub.plan?.name || sub.planId}</strong>
+                              <strong>{sub?.plan?.name || sub.planId || 'N/A'}</strong>
                             </td>
                             <td>{new Date(sub.startDate).toLocaleDateString()}</td>
                             <td>{new Date(sub.endDate).toLocaleDateString()}</td>
@@ -507,6 +509,7 @@ export default function UsersList() {
                             <th>Сумма</th>
                             <th>Статус</th>
                             <th>Описание</th>
+                            <th>YooKassa URL</th>
                           </tr>
                         </thead>
                         <tbody>
@@ -531,6 +534,16 @@ export default function UsersList() {
                                 </span>
                               </td>
                               <td>{payment.description}</td>
+                              <td>
+                                <a
+                                  href={`https://yookassa.ru/my/payments?search=${payment.yookassaPaymentId}`}
+                                  target="_blank"
+                                  rel="noopener noreferrer"
+                                  className="btn btn-sm btn-primary"
+                                >
+                                  ЮKassa
+                                </a>
+                              </td>
                             </tr>
                           ))}
                         </tbody>

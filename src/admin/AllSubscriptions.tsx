@@ -211,113 +211,126 @@ export default function AllSubscriptions() {
           />
         )}
 
-        {/* Subscriptions Table */}
-        {!loading && filteredSubscriptions.length > 0 && (
-          <div className="card">
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 'var(--spacing-lg)' }}>
-              <h2>
-                Список подписок
-                <span style={{ marginLeft: 'var(--spacing-sm)', color: 'var(--gray-500)', fontWeight: 'normal', fontSize: '1rem' }}>
-                  ({filteredSubscriptions.length})
-                </span>
-              </h2>
-            </div>
-            
-            <div className="table-container">
-              <table className="data-table">
-                <thead>
-                  <tr>
-                    <th>ID</th>
-                    <th>ID пользователя</th>
-                    <th>Тариф</th>
-                    <th>Дата начала</th>
-                    <th>Дата окончания</th>
-                    <th>Длительность</th>
-                    <th>Статус</th>
-                    <th>Создана</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {filteredSubscriptions.map((subscription) => {
-                    const daysSinceStart = Math.floor((new Date().getTime() - new Date(subscription.startDate).getTime()) / (1000 * 60 * 60 * 24));
-                    const daysTotal = Math.floor((new Date(subscription.endDate).getTime() - new Date(subscription.startDate).getTime()) / (1000 * 60 * 60 * 24));
-                    const daysRemaining = Math.ceil((new Date(subscription.endDate).getTime() - new Date().getTime()) / (1000 * 60 * 60 * 24));
-                    const expiringSoon = isExpiringSoon(subscription.endDate);
+        {/* Subscriptions grouped by user */}
+        {!loading && filteredSubscriptions.length > 0 && (() => {
+          const groups = filteredSubscriptions.reduce<Record<string, SubscriptionWithUser[]>>((acc, sub) => {
+            const key = sub.userId;
+            if (!acc[key]) acc[key] = [];
+            acc[key].push(sub);
+            return acc;
+          }, {});
 
-                    return (
-                      <tr key={subscription.id}>
-                        <td>
-                          <div style={{ fontSize: '0.75rem', color: 'var(--gray-600)', fontFamily: 'monospace' }}>
-                            {subscription.id}
+          return (
+            <>
+              <div style={{ marginBottom: 'var(--spacing-lg)', color: 'var(--gray-600)', fontSize: '0.875rem' }}>
+                Список подписок: {filteredSubscriptions.length}, пользователей: {Object.keys(groups).length}
+              </div>
+              {Object.entries(groups).map(([userId, subs]) => {
+                const user = subs[0].user;
+                return (
+                  <div key={userId} className="card" style={{ marginBottom: 'var(--spacing-lg)' }}>
+                    <div className="card-header">
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                        <div className="user-avatar">
+                          {(user?.fullName || userId).charAt(0).toUpperCase()}
+                        </div>
+                        <div>
+                          <div style={{ fontWeight: 600, fontSize: '1rem' }}>
+                            {user?.fullName || 'Неизвестный пользователь'}
                           </div>
-                        </td>
-                        <td>
-                          <div>
-                            <div style={{ fontWeight: 500 }}>
-                              {subscription.userId || 'Неизвестный пользователь'}
-                            </div>
-                            {/* {subscription.userId && (
-                              <div style={{ fontSize: '0.75rem', color: 'var(--gray-600)' }}>
-                                {subscription.userId}
-                              </div>
-                            )} */}
+                          <div style={{ fontSize: '0.75rem', color: 'var(--gray-600)' }}>
+                            {user?.email && <span style={{ marginRight: '12px' }}>{user.email}</span>}
+                            {user?.phone && <span style={{ marginRight: '12px' }}>{user.phone}</span>}
+                            <code style={{ background: 'var(--gray-100)', padding: '1px 5px', borderRadius: '4px', fontSize: '0.7rem' }}>{userId}</code>
                           </div>
-                        </td>
-                        <td>
-                          <div style={{ fontWeight: 500 }}>
-                            {subscription.plan?.name || 'N/A'}
-                          </div>
-                          {subscription.plan?.price && (
-                            <div style={{ fontSize: '0.75rem', color: 'var(--gray-600)' }}>
-                              {subscription.plan.price.toLocaleString('ru-RU')} RUB
-                            </div>
-                          )}
-                        </td>
-                        <td>{formatDate(subscription.startDate)}</td>
-                        <td>
-                          <div>
-                            {formatDate(subscription.endDate)}
-                            {expiringSoon && subscription.isActive && (
-                              <div>
-                                <span className="badge badge-info" style={{ fontSize: '0.7rem', marginTop: '4px' }}>
-                                  Осталось {daysRemaining} дн.
-                                </span>
-                              </div>
-                            )}
-                          </div>
-                        </td>
-                        <td>
-                          <div style={{ fontSize: '0.875rem' }}>
-                            {subscription.isActive ? `${daysSinceStart}/${daysTotal} дн.` : `${daysTotal} дн.`}
-                          </div>
-                          {subscription.isActive && (
-                            <div style={{ width: '100%', height: '4px', background: 'var(--gray-200)', borderRadius: '2px', marginTop: '4px' }}>
-                              <div 
-                                style={{ 
-                                  width: `${Math.min((daysSinceStart / daysTotal) * 100, 100)}%`, 
-                                  height: '100%', 
-                                  background: expiringSoon ? 'var(--warning-color)' : 'var(--primary-color)', 
-                                  borderRadius: '2px',
-                                  transition: 'width 0.3s ease'
-                                }}
-                              />
-                            </div>
-                          )}
-                        </td>
-                        <td>
-                          <span className={getStatusBadgeClass(subscription.isActive)}>
-                            {subscription.isActive ? '● Активна' : '○ Неактивна'}
-                          </span>
-                        </td>
-                        <td>{formatDate(subscription.createdAt)}</td>
-                      </tr>
-                    );
-                  })}
-                </tbody>
-              </table>
-            </div>
-          </div>
-        )}
+                        </div>
+                        <span className="badge badge-neutral" style={{ marginLeft: 'auto' }}>
+                          {subs.length} подп.
+                        </span>
+                      </div>
+                    </div>
+                    <div className="table-container">
+                      <table className="data-table">
+                        <thead>
+                          <tr>
+                            <th>ID</th>
+                            <th>Тариф</th>
+                            <th>Дата начала</th>
+                            <th>Дата окончания</th>
+                            <th>Длительность</th>
+                            <th>Статус</th>
+                            <th>Создана</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {subs.map((subscription) => {
+                            const daysSinceStart = Math.floor((new Date().getTime() - new Date(subscription.startDate).getTime()) / (1000 * 60 * 60 * 24));
+                            const daysTotal = Math.floor((new Date(subscription.endDate).getTime() - new Date(subscription.startDate).getTime()) / (1000 * 60 * 60 * 24));
+                            const daysRemaining = Math.ceil((new Date(subscription.endDate).getTime() - new Date().getTime()) / (1000 * 60 * 60 * 24));
+                            const expiringSoon = isExpiringSoon(subscription.endDate);
+
+                            return (
+                              <tr key={subscription.id}>
+                                <td>
+                                  <div style={{ fontSize: '0.75rem', color: 'var(--gray-600)', fontFamily: 'monospace' }}>
+                                    {subscription.id}
+                                  </div>
+                                </td>
+                                <td>
+                                  <div style={{ fontWeight: 500 }}>{subscription.plan?.name || 'N/A'}</div>
+                                  {subscription.plan?.price && (
+                                    <div style={{ fontSize: '0.75rem', color: 'var(--gray-600)' }}>
+                                      {subscription.plan.price.toLocaleString('ru-RU')} RUB
+                                    </div>
+                                  )}
+                                </td>
+                                <td>{formatDate(subscription.startDate)}</td>
+                                <td>
+                                  <div>
+                                    {formatDate(subscription.endDate)}
+                                    {expiringSoon && subscription.isActive && (
+                                      <div>
+                                        <span className="badge badge-info" style={{ fontSize: '0.7rem', marginTop: '4px' }}>
+                                          Осталось {daysRemaining} дн.
+                                        </span>
+                                      </div>
+                                    )}
+                                  </div>
+                                </td>
+                                <td>
+                                  <div style={{ fontSize: '0.875rem' }}>
+                                    {subscription.isActive ? `${daysSinceStart}/${daysTotal} дн.` : `${daysTotal} дн.`}
+                                  </div>
+                                  {subscription.isActive && (
+                                    <div style={{ width: '100%', height: '4px', background: 'var(--gray-200)', borderRadius: '2px', marginTop: '4px' }}>
+                                      <div style={{
+                                        width: `${Math.min((daysSinceStart / daysTotal) * 100, 100)}%`,
+                                        height: '100%',
+                                        background: expiringSoon ? 'var(--warning-color)' : 'var(--primary-color)',
+                                        borderRadius: '2px',
+                                        transition: 'width 0.3s ease'
+                                      }} />
+                                    </div>
+                                  )}
+                                </td>
+                                <td>
+                                  <span className={getStatusBadgeClass(subscription.isActive)}>
+                                    {subscription.isActive ? '● Активна' : '○ Неактивна'}
+                                  </span>
+                                </td>
+                                <td>{formatDate(subscription.createdAt)}</td>
+                              </tr>
+                            );
+                          })}
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                );
+              })}
+            </>
+          );
+        })()}
 
         {!loading && subscriptions && subscriptions.length > 0 && filteredSubscriptions.length === 0 && (
           <EmptyState 
