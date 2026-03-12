@@ -15,7 +15,7 @@ export default function Home() {
             </svg>
           </div>
           <h1 className="home-title">Magazin Admin</h1>
-          <p className="home-subtitle">Manage subscriptions, users, and QR codes</p>
+          <p className="home-subtitle">Управление подписками, пользователями и QR-кодами</p>
         </div>
 
         <div className="home-cards">
@@ -28,8 +28,8 @@ export default function Home() {
                 <path d="M16 3.13a4 4 0 0 1 0 7.75" />
               </svg>
             </div>
-            <h3 className="card-title">Users</h3>
-            <p className="card-description">View and manage all users and their subscriptions</p>
+            <h3 className="card-title">Пользователи</h3>
+            <p className="card-description">Просмотр и управление всеми пользователями и их подписками</p>
             <div className="card-arrow">→</div>
           </Link>
 
@@ -40,8 +40,8 @@ export default function Home() {
                 <line x1="1" y1="10" x2="23" y2="10" />
               </svg>
             </div>
-            <h3 className="card-title">Subscription Plan</h3>
-            <p className="card-description">Create and edit subscription plan details</p>
+            <h3 className="card-title">Тарифный план</h3>
+            <p className="card-description">Создание и редактирование тарифного плана</p>
             <div className="card-arrow">→</div>
           </Link>
 
@@ -53,8 +53,8 @@ export default function Home() {
                 <path d="M9 21V9" />
               </svg>
             </div>
-            <h3 className="card-title">All Subscriptions</h3>
-            <p className="card-description">View and manage all user subscriptions</p>
+            <h3 className="card-title">Все подписки</h3>
+            <p className="card-description">Просмотр и управление всеми подписками пользователей</p>
             <div className="card-arrow">→</div>
           </Link>
 
@@ -65,8 +65,8 @@ export default function Home() {
                 <line x1="2" y1="10" x2="22" y2="10" />
               </svg>
             </div>
-            <h3 className="card-title">Payments</h3>
-            <p className="card-description">View user payment history and transactions</p>
+            <h3 className="card-title">Платежи</h3>
+            <p className="card-description">Просмотр истории платежей и транзакций пользователей</p>
             <div className="card-arrow">→</div>
           </Link>
 
@@ -77,8 +77,8 @@ export default function Home() {
                 <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11" />
               </svg>
             </div>
-            <h3 className="card-title">Verifications</h3>
-            <p className="card-description">View all auth verifications and delete them in one action</p>
+            <h3 className="card-title">Верификации</h3>
+            <p className="card-description">Просмотр всех верификаций и массовое удаление</p>
             <div className="card-arrow">→</div>
           </Link>
 
@@ -91,8 +91,8 @@ export default function Home() {
                 <rect x="3" y="14" width="7" height="7" />
               </svg>
             </div>
-            <h3 className="card-title">QR Scanner</h3>
-            <p className="card-description">Scan and validate subscription QR codes</p>
+            <h3 className="card-title">QR-сканер</h3>
+            <p className="card-description">Сканирование и проверка QR-кодов подписок</p>
             <div className="card-arrow">→</div>
           </Link>
         </div>
