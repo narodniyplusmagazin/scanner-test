@@ -56,6 +56,12 @@ export default function Layout({ children, title }: LayoutProps) {
               Верификации
             </Link>
             <Link
+              to="/admin/qr-usage"
+              className={`layout-nav-link ${isActive('/admin/qr-usage') ? 'active' : ''}`}
+            >
+              История QR
+            </Link>
+            <Link
               to="/qr"
               className={`layout-nav-link ${isActive('/qr') ? 'active' : ''}`}
             >

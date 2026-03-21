@@ -6,6 +6,7 @@ import SubscriptionPlanEdit from './admin/SubscriptionPlanEdit'
 import PaymentsList from './admin/PaymentsList'
 import AllSubscriptions from './admin/AllSubscriptions'
 import VerificationsList from './admin/VerificationsList'
+import QRUsageHistory from './admin/QRUsageHistory'
 import QRScanner from './components/QRScanner/QRScanner'
 import Home from './pages/Home'
 
@@ -19,6 +20,7 @@ function App() {
         <Route path="/admin/subscriptions" element={<AllSubscriptions />} />
         <Route path="/admin/payments" element={<PaymentsList />} />
         <Route path="/admin/verifications" element={<VerificationsList />} />
+        <Route path="/admin/qr-usage" element={<QRUsageHistory />} />
         <Route path="/qr" element={<QRScanner />} />
       </Routes>
     </BrowserRouter>
