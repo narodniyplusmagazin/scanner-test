@@ -24,6 +24,8 @@ export default function UsersList() {
   const [paymentsError, setPaymentsError] = useState<string | null>(null)
   const [searchQuery, setSearchQuery] = useState('')
   const [showCreateModal, setShowCreateModal] = useState(false)
+  const [currentPage, setCurrentPage] = useState(1)
+  const PAGE_SIZE = 25
 
 
   useEffect(() => {
@@ -149,6 +151,9 @@ export default function UsersList() {
       user.phone?.toLowerCase().includes(query)
     )
   }) || []
+
+  const totalPages = Math.ceil(filteredUsers.length / PAGE_SIZE)
+  const paginatedUsers = filteredUsers.slice((currentPage - 1) * PAGE_SIZE, currentPage * PAGE_SIZE)
   
   console.log(selectedUserId);
   console.log(subscriptions);
@@ -213,11 +218,11 @@ export default function UsersList() {
                     type="text"
                     placeholder="Поиск пользователей..."
                     value={searchQuery}
-                    onChange={(e) => setSearchQuery(e.target.value)}
+                    onChange={(e) => { setSearchQuery(e.target.value); setCurrentPage(1) }}
                     className="search-input"
                   />
                   {searchQuery && (
-                    <button className="search-clear" onClick={() => setSearchQuery('')}>×</button>
+                    <button className="search-clear" onClick={() => { setSearchQuery(''); setCurrentPage(1) }}>×</button>
                   )}
                 </div>
               </div>
@@ -245,7 +250,7 @@ export default function UsersList() {
                       </td>
                     </tr>
                   ) : (
-                  filteredUsers.map(u => (
+                  paginatedUsers.map(u => (
                     <tr 
                       key={u.id}
                       className={selectedUserId === u.id ? 'row-selected' : ''}
@@ -287,6 +292,33 @@ export default function UsersList() {
                 </tbody>
               </table>
             </div>
+            {totalPages > 1 && (
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', padding: '16px' }}>
+                <button
+                  className="btn btn-sm btn-primary"
+                  disabled={currentPage === 1}
+                  onClick={() => setCurrentPage(p => p - 1)}
+                >
+                  ‹
+                </button>
+                {Array.from({ length: totalPages }, (_, i) => i + 1).map(page => (
+                  <button
+                    key={page}
+                    className={`btn btn-sm ${currentPage === page ? 'btn-primary-active' : 'btn-primary'}`}
+                    onClick={() => setCurrentPage(page)}
+                  >
+                    {page}
+                  </button>
+                ))}
+                <button
+                  className="btn btn-sm btn-primary"
+                  disabled={currentPage === totalPages}
+                  onClick={() => setCurrentPage(p => p + 1)}
+                >
+                  ›
+                </button>
+              </div>
+            )}
           </div>
         )}
 
